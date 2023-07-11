@@ -12,7 +12,7 @@
         - cd rabbitmq/RabbitLambda
         - zip -r RabbitLambda.zip *
         - ls -ltr
-        #- mv RabbitLambda.zip ../
+        - mv RabbitLambda.zip ../
         - cd ..
         - ls -ltr
         
