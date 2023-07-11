@@ -2404,7 +2404,7 @@ Resources:
   rRabbitMQClusterSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub ${pProduct}-secgroup-${pEnvironment}
+      GroupName: !Sub ${pProduct}-secgroup
       VpcId: !Ref pVPCId
       GroupDescription: Enable RabbitMQ Access within SecGroup
       SecurityGroupEgress:
@@ -2611,7 +2611,7 @@ Resources:
   rRabbitConfigureRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${pProduct}-iamrole-${pEnvironment}-rabbit-configure-${AWS::Region}
+      RoleName: !Sub ${pProduct}-iamrole-rabbitmq
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
