@@ -149,7 +149,7 @@ Parameters:
   pLambdaCodeBucket:
     Type: String
     Description: S3 Bucket that contains the Lambda Code for RabbitMQ
-    Default: "tobereplaced"
+    Default: "cf-templates-s3uaul2id9rr-us-east-1"
   pObjectVersion:
     Type: String
     Description: S3 Version of the Lambda Code to use
