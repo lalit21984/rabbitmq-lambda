@@ -41,17 +41,17 @@ Parameters:
       - 'No'
     Default: 'Yes'
     Description: Deploy into the PreProd account
-  pDeployIntoProd: # Deploy Target: Prod
-    Type: String
-    AllowedValues:
-      - 'Yes'
-      - 'No'
-    Default: 'Yes'
-    Description: Deploy into the Prod account
-  pRegion2Active:
-    Type: String
-    Description: Deploy instances into secondary region
-    Default: 'No'
+  # pDeployIntoProd: # Deploy Target: Prod
+  #   Type: String
+  #   AllowedValues:
+  #     - 'Yes'
+  #     - 'No'
+    # Default: 'Yes'
+    # Description: Deploy into the Prod account
+  # pRegion2Active:
+  #   Type: String
+  #   Description: Deploy instances into secondary region
+  #   Default: 'No'
 
 # Approvals Before: Test / PreProd / Prod
   # pApprovalIntoTest: # Require Approval before Test
@@ -61,40 +61,40 @@ Parameters:
   #     - 'No'
   #   Default: 'Yes'
   #   Description: Require Approval before Test
-  pApprovalIntoPreProd: # Require Approval before PreProd
-    Type: String
-    AllowedValues:
-      - 'Yes'
-      - 'No'
-    Default: 'Yes'
-    Description: Require Approval before PreProd
-  pApprovalIntoProd: # Require Approval before Prod
-    Type: String
-    AllowedValues:
-      - 'Yes'
-      - 'No'
-    Default: 'Yes'
-    Description: Require Approval before Prod
+  # pApprovalIntoPreProd: # Require Approval before PreProd
+  #   Type: String
+  #   AllowedValues:
+  #     - 'Yes'
+  #     - 'No'
+  #   Default: 'Yes'
+  #   Description: Require Approval before PreProd
+  # pApprovalIntoProd: # Require Approval before Prod
+  #   Type: String
+  #   AllowedValues:
+  #     - 'Yes'
+  #     - 'No'
+  #   Default: 'Yes'
+  #   Description: Require Approval before Prod
 
 # Template Path: 
   pTemplatePath: 
     Type: String
     Default: 'app/cloudformation.yml'
     Description: Path to the template to deploy from the source or build artifact
-  pTemplatePathRegion2: 
-    Type: String
-    Default: 'app/cloudformation.yml'
-    Description: Path to the template to deploy from the source or build artifact
+  # pTemplatePathRegion2: 
+  #   Type: String
+  #   Default: 'app/cloudformation.yml'
+  #   Description: Path to the template to deploy from the source or build artifact
  
 # Optional Configuration File for Dev
   pConfigurationPathDev: 
     Type: String
     Default: 'app/config/configuration-dev.json'
     Description: (Optional) CloudFormation Configuration file for Dev
-  pConfigurationPathDevR2: 
-    Type: String
-    Default: 'app/config/configuration-dev-r2.json'
-    Description: (Optional) CloudFormation Configuration file for Dev
+  # pConfigurationPathDevR2: 
+  #   Type: String
+  #   Default: 'app/config/configuration-dev-r2.json'
+  #   Description: (Optional) CloudFormation Configuration file for Dev
 # Optional Configuration File for Test
   # pConfigurationPathTest: 
   #   Type: String
@@ -105,23 +105,23 @@ Parameters:
   #   Default: 'app/config/configuration-test-r2.json'
   #   Description: (Optional) CloudFormation Configuration file for Test
 # Optional Configuration File for PreProd
-  pConfigurationPathPreProd: 
-    Type: String
-    Default: 'app/config/configuration-preprod.json'
-    Description: (Optional) CloudFormation Configuration file for PreProd
-  pConfigurationPathPreProdR2: 
-    Type: String
-    Default: 'app/config/configuration-preprod-r2.json'
-    Description: (Optional) CloudFormation Configuration file for PreProd
-# Optional Configuration File for Prod
-  pConfigurationPathProd: 
-    Type: String
-    Default: 'app/config/configuration-prod.json'
-    Description: (Optional) CloudFormation Configuration file for Prod
-  pConfigurationPathProdR2: 
-    Type: String
-    Default: 'app/config/configuration-prod-r2.json'
-    Description: (Optional) CloudFormation Configuration file for Prod
+#   pConfigurationPathPreProd: 
+#     Type: String
+#     Default: 'app/config/configuration-preprod.json'
+#     Description: (Optional) CloudFormation Configuration file for PreProd
+#   pConfigurationPathPreProdR2: 
+#     Type: String
+#     Default: 'app/config/configuration-preprod-r2.json'
+#     Description: (Optional) CloudFormation Configuration file for PreProd
+# # Optional Configuration File for Prod
+#   pConfigurationPathProd: 
+#     Type: String
+#     Default: 'app/config/configuration-prod.json'
+#     Description: (Optional) CloudFormation Configuration file for Prod
+#   pConfigurationPathProdR2: 
+#     Type: String
+#     Default: 'app/config/configuration-prod-r2.json'
+#     Description: (Optional) CloudFormation Configuration file for Prod
 
 # Build Project: Yes / No
   pUseCodeBuildProject: 
@@ -139,8 +139,10 @@ Parameters:
 
 ### SSM Parameters
   pSharedProdAccountNumber:
-    Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/accounts/SharedServices/Prod/id'
+    Type: String
+    #Type: 'AWS::SSM::Parameter::Value<String>'
+    #Default: '/accounts/SharedServices/Prod/id'
+    Default: '810246177697'
   pDevAccountNumber:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '810246177697'
@@ -253,7 +255,7 @@ Resources:
         Type: CODEPIPELINE
         BuildSpec: !Ref pBuildspecPath
       TimeoutInMinutes: 10
-      EncryptionKey: !Ref pRegion1CodePipelineKmsKey
+      # EncryptionKey: !Ref pRegion1CodePipelineKmsKey
 
   rScanCodeBuildProject:
     Type: AWS::CodeBuild::Project
@@ -272,7 +274,7 @@ Resources:
         Type: CODEPIPELINE
         BuildSpec: 'cicd/scan_buildspec.yml'
       TimeoutInMinutes: 10
-      EncryptionKey: !Ref pRegion1CodePipelineKmsKey
+      # EncryptionKey: !Ref pRegion1CodePipelineKmsKey
 
   rCodeBuildLambdaCodeProject:
     Type: AWS::CodeBuild::Project
@@ -294,15 +296,15 @@ Resources:
             Value: !Ref pRegion2CodePipelineArtifactBucket
           - Name: BUCKET_PREFIX
             Value: !Ref pProduct
-          - Name: KMS_ARN_R1
-            Value: !Ref pRegion1CodePipelineKmsKey
-          - Name: KMS_ARN_R2
-            Value: !Ref pRegion2CodePipelineKmsKey
+          # - Name: KMS_ARN_R1
+          #   Value: !Ref pRegion1CodePipelineKmsKey
+          # - Name: KMS_ARN_R2
+          #   Value: !Ref pRegion2CodePipelineKmsKey
       Source:
         Type: CODEPIPELINE
         BuildSpec: cicd/lambdabuildspec.yml
       TimeoutInMinutes: 10
-      EncryptionKey: !Ref pRegion1CodePipelineKmsKey
+      # EncryptionKey: !Ref pRegion1CodePipelineKmsKey
       ResourceAccessRole: !Ref pCodeBuildRole
   # --------------
   # CodePipeline
