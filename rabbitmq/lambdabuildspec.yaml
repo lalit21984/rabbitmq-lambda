@@ -11,8 +11,10 @@
         - echo $(pwd)
         - cd rabbitmq/RabbitLambda
         - zip -r RabbitLambda.zip *
+        - ls -ltr
         #- mv RabbitLambda.zip ../
         - cd ..
+        - ls -ltr
         
         - aws s3 cp RabbitLambda.zip s3://$CODE_BUCKET_R1/$BUCKET_PREFIX/RabbitLambda.zip
         - objVersionr1=$(aws s3api list-object-versions --bucket $CODE_BUCKET_R1 --prefix $BUCKET_PREFIX/RabbitLambda.zip | jq ".Versions[0].VersionId")
