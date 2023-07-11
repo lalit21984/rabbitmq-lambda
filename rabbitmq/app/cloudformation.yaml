@@ -55,10 +55,11 @@ Parameters:
   #   Type: 'AWS::SSM::Parameter::Value<String>'
   #   Description: ALB Access Log Bucket
   #   Default: '/accounts/logging/aws-load-balancer-log-bucket'
-  pLatestAMIImage:
-    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
-    Description: SSM parameter for latest AMI ID
-    Default: 'ami-00abfd8da690f984d'
+  # pLatestAMIImage:
+  #   #Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+  #    Type: String
+  #   Description: SSM parameter for latest AMI ID
+  #   Default: 'ami-00abfd8da690f984d'
 
   ## Pipeline Parameters
   pMainRegion:
