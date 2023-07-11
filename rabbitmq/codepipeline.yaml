@@ -10,7 +10,7 @@ Parameters:
   pTeam:
     Type: String
     Description: Team Name
-    Default: ""
+    Default: "teamA"
 
 ### Pipeline Configuration: 
 
@@ -143,24 +143,27 @@ Parameters:
     Default: '/accounts/SharedServices/Prod/id'
   pDevAccountNumber:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: '/accounts/dev/id'
+    Default: '810246177697'
   # pTestAccountNumber:
   #   Type: AWS::SSM::Parameter::Value<String>
   #   Default: '/accounts/test/id'
-  pPreProdAccountNumber:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: '/accounts/preprod/id'
-  pProdAccountNumber:
-    Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/accounts/prod/id'
+  # pPreProdAccountNumber:
+  #   Type: AWS::SSM::Parameter::Value<String>
+  #   Default: '/accounts/preprod/id'
+  # pProdAccountNumber:
+  #   Type: 'AWS::SSM::Parameter::Value<String>'
+  #   Default: '/accounts/prod/id'
   pDeplAccountNumber:
     Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/accounts/depl/id'
+    Default: '810246177697'
   pRegion1Name:
-    Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/pipelinefactory/codepipeline/region1/name'
+    Type: String
+    #Type: 'AWS::SSM::Parameter::Value<String>'
+    #Default: '/pipelinefactory/codepipeline/region1/name'
+    Default: 'us-east-1'
   pRegion1CodePipelineKmsKey:
-    Type: 'AWS::SSM::Parameter::Value<String>'
+    Type: String
+    #Type: 'AWS::SSM::Parameter::Value<String>'
     Default: '/pipelinefactory/codepipeline/region1/kmskeyarn'
   pRegion1CodePipelineArtifactBucket:
     Type: 'AWS::SSM::Parameter::Value<String>'
@@ -242,8 +245,8 @@ Resources:
             Value: !Ref pRegion1CodePipelineArtifactBucket
           - Name: TEMPLATE_PREFIX
             Value: codebuild
-          - Name: KMS_ARN
-            Value: !Ref pRegion1CodePipelineKmsKey
+          # - Name: KMS_ARN
+          #   Value: !Ref pRegion1CodePipelineKmsKey
           - Name: TEMPLATE_PATH
             Value: !Ref pTemplatePath
       Source:
