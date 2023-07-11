@@ -2570,7 +2570,7 @@ Resources:
       FunctionName: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
       CodeUri:
         Bucket: !Ref pLambdaCodeBucket
-        Key: !Sub ${pProduct}/RabbitLambda.zip
+        Key: !Sub my-app/RabbitLambda.zip
         Version: !Ref pObjectVersion
       Environment:
         Variables:
