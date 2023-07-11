@@ -58,7 +58,7 @@ Parameters:
   pLatestAMIImage:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Description: SSM parameter for latest AMI ID
-    Default: ami-0e6594d5d9940bd38
+    Default: 'ami-0e6594d5d9940bd38'
 
   ## Pipeline Parameters
   pMainRegion:
