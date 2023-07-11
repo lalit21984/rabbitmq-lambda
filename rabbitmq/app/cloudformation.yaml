@@ -2231,27 +2231,26 @@ Resources:
             - kms:GenerateDataKey*
             - kms:DescribeKey
             Resource: '*'
-            Condition:
-              'Null':
-                kms:ViaService: !!bool 'false'
-              ArnLike:
-                aws:PrincipalArn:
-                  - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/*
+            # Condition:
+            #   'Null':
+            #     kms:ViaService: !!bool 'false'
+            #   ArnLike:
+            #     aws:PrincipalArn:
+            #       - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/*
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/CodePipeline-Action
+            Principal: '*'
             Action:
             - kms:CreateGrant
             - kms:ListGrants
             - kms:RetireGrant
             - kms:RevokeGrant
             Resource: '*'
-            Condition:
-              Bool:
-                kms:GrantIsForAWSResource: !!bool 'true'
-              StringEquals:
-                aws:PrincipalAccount: !Ref AWS::AccountId
+            # Condition:
+            #   Bool:
+            #     kms:GrantIsForAWSResource: !!bool 'true'
+            #   StringEquals:
+            #     aws:PrincipalAccount: !Ref AWS::AccountId
           - Sid: Key administration permissions
             Effect: Allow
             Principal:
