@@ -2210,8 +2210,7 @@ Resources:
         Statement:
           - Sid: Enable IAM and allow interactive (human) role(s) key use permissions
             Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/team-sso-superadmin-${pEnvironment}
+            Principal: '*'
             Action:
             - kms:Encrypt
             - kms:Decrypt
@@ -2219,10 +2218,10 @@ Resources:
             - kms:GenerateDataKey*
             - kms:DescribeKey
             Resource: '*'
-            Condition:
-              ArnLike:
-                aws:PrincipalArn:
-                  - !Sub arn:aws:iam::${AWS::AccountId}:role/team*sso*
+            # Condition:
+            #   ArnLike:
+            #     aws:PrincipalArn:
+            #       - !Sub arn:aws:iam::${AWS::AccountId}:role/team*sso*
           - Sid: Enable IAM and allow service (non-human) role(s) key use permissions
             Effect: Allow
             Principal:
