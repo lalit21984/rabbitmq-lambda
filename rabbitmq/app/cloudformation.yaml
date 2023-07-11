@@ -7,18 +7,18 @@ Parameters:
   pProduct:
     Description: Name of the instance
     Type: String
-    Default: is'
+    Default: 'is'
   pEnvironment:
     Description: Environment Name
     Type: String
-    Default: Dev
+    Default: 'dev'
   pTagteamRole:
     Type: String
     AllowedValues:
       - app
       - web
       - db
-    Default: app
+    Default: 'app'
   pTagteamDataclass:
     Type: String
     AllowedValues:
@@ -2649,25 +2649,25 @@ Resources:
                   - ec2:AssignPrivateIpAddress
                   - ec2:UnassignPrivateIpAddress
                 Resource: '*'
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-iamrole-${pEnvironment}-rabbit-configure-${AWS::Region}
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: IAM Role for RabbitConfigure Lambda Function
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+      # Tags:
+      #   - Key: Name
+      #     Value: !Sub ${pProduct}-iamrole-${pEnvironment}-rabbit-configure-${AWS::Region}
+      #   - Key: team:lifecycle
+      #     Value: !Ref pEnvironment
+      #   - Key: team:vsad
+      #     Value: !Ref pVsadTag
+      #   - Key: team:vast
+      #     Value: !Ref pVastTag
+      #   - Key: team:purpose
+      #     Value: IAM Role for RabbitConfigure Lambda Function
+      #   - Key: team:dataclass
+      #     Value: !Ref pTagteamDataclass
+      #   - Key: team:launched-by
+      #     Value: !Ref pTagteamLaunchedBy
+      #   - Key: team:resource-custodian
+      #     Value: !Ref pTagteamResourceCustodian
+      #   - Key: team:team-owner
+      #     Value: !Ref pTagteamTeamOwner
 
   # rPublicALBSecurityGroup01:
   #   Type: AWS::EC2::SecurityGroup
