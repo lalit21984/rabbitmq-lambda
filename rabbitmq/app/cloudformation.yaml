@@ -201,385 +201,385 @@ Conditions:
 
 Resources:
   ### Application server cluster IAM resources
-  rApplicationInstanceRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${pProduct}-role-${pEnvironment}-instance-${AWS::Region}
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-        Version: "2012-10-17"
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
-        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
-      PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/team-fed-svcrole-boundary
-      Policies:
-        - PolicyName: AllowKMSAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:   
-              - Sid: allowsecretaccess
-                Effect: Allow
-                Action:
-                  - secretsmanager:GetSecretValue
-                Resource: 
-                  - !ImportValue iSSPubArn
-                  - !ImportValue iSSPrivArn
-                  - !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-aurora-postgresql/aurora/*
-                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ab-app-app-secret-${pEnvironment}-rabbituser*
-                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${pProduct}-secret-${pEnvironment}-iotOracledbPassword*
-              - Sid: allowkmsforsecrets
-                Effect: Allow
-                Action:
-                  - kms:DescribeKey
-                  - kms:Decrypt
-                  - kms:Encrypt
-                  - kms:GenerateDataKey
-                Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
-                Condition:
-                  ForAnyValue:StringLike:
-                    kms:ResourceAliases:
-                      - !Sub alias/ab-app2-app-app-ss-secrets
-                      - !Sub alias/ab-app-aurora-postgresql-db-root-secret-key
-                      - !Sub alias/ab-app-aurora-postgresql-db-user-secret-key
-                      - !Sub alias/ab-app-aurora-postgresql-AuroraClusterKey
-                      - !Sub alias/${pProduct}-rabbit-user-pwd-key
-                      - !Sub alias/${pProduct}-iotOracledb-pwd-key
-              - Sid: allowkmsfors3
-                Effect: Allow
-                Action:
-                  - kms:DescribeKey
-                  - kms:Decrypt
-                  - kms:Encrypt
-                  - kms:GenerateDataKey
-                Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
-                Condition:
-                  ForAnyValue:StringLike:
-                    kms:ResourceAliases:
-                      - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata-${AWS::Region}
-                      - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata
-              - Sid: allowkmsfordepls3
-                Effect: Allow
-                Action:
-                  - kms:DescribeKey
-                  - kms:Decrypt
-                  - kms:Encrypt
-                  - kms:GenerateDataKey
-                Resource: '*'
-        - PolicyName: AllowServiceVerificationBucketAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Sid: allows3getartifact
-                Effect: Allow
-                Action:
-                  - s3:Get*
-                  - s3:Put*
-                Resource: 
-                  # - !Sub arn:aws:s3:::${pProduct}-s3-${pEnvironment}-app3-${AWS::Region}/*
-                  - !Sub arn:aws:s3:::ab-app2-app-s3-${pEnvironment}-userdata-${AWS::Region}/*
-                  - arn:aws:s3:::team-device-app-jenkins-s3/*
-                  - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
-              - Sid: allows3list
-                Effect: Allow
-                Action:
-                  - s3:ListBucket
-                Resource: 
-                  - arn:aws:s3:::team-device-app-jenkins-s3/*
-                  - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
-        - PolicyName: CodeDeployAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Sid: allowcodedeploystop
-                Effect: Allow
-                Action:
-                  - codedeploy:ListDeployments
-                  - codedeploy:StopDeployment
-                  - codedeploy:GetDeployment
-                  - codedeploy:ListDeploymentInstances
-                Resource:
-                  - !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:* #${ApplicationName}/${DeploymentGroupName}
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-role-${pEnvironment}-instance-${AWS::Region}
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: IAM Role for Application EC2 Instance
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  # rApplicationInstanceRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: !Sub ${pProduct}-role-${pEnvironment}-instance-${AWS::Region}
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Action: sts:AssumeRole
+  #           Effect: Allow
+  #           Principal:
+  #             Service: ec2.amazonaws.com
+  #       Version: "2012-10-17"
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+  #       - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+  #     PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/team-fed-svcrole-boundary
+  #     Policies:
+  #       - PolicyName: AllowKMSAccess
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:   
+  #             - Sid: allowsecretaccess
+  #               Effect: Allow
+  #               Action:
+  #                 - secretsmanager:GetSecretValue
+  #               Resource: 
+  #                 - !ImportValue iSSPubArn
+  #                 - !ImportValue iSSPrivArn
+  #                 - !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-aurora-postgresql/aurora/*
+  #                 - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ab-app-app-secret-${pEnvironment}-rabbituser*
+  #                 - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${pProduct}-secret-${pEnvironment}-iotOracledbPassword*
+  #             - Sid: allowkmsforsecrets
+  #               Effect: Allow
+  #               Action:
+  #                 - kms:DescribeKey
+  #                 - kms:Decrypt
+  #                 - kms:Encrypt
+  #                 - kms:GenerateDataKey
+  #               Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
+  #               Condition:
+  #                 ForAnyValue:StringLike:
+  #                   kms:ResourceAliases:
+  #                     - !Sub alias/ab-app2-app-app-ss-secrets
+  #                     - !Sub alias/ab-app-aurora-postgresql-db-root-secret-key
+  #                     - !Sub alias/ab-app-aurora-postgresql-db-user-secret-key
+  #                     - !Sub alias/ab-app-aurora-postgresql-AuroraClusterKey
+  #                     - !Sub alias/${pProduct}-rabbit-user-pwd-key
+  #                     - !Sub alias/${pProduct}-iotOracledb-pwd-key
+  #             - Sid: allowkmsfors3
+  #               Effect: Allow
+  #               Action:
+  #                 - kms:DescribeKey
+  #                 - kms:Decrypt
+  #                 - kms:Encrypt
+  #                 - kms:GenerateDataKey
+  #               Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
+  #               Condition:
+  #                 ForAnyValue:StringLike:
+  #                   kms:ResourceAliases:
+  #                     - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata-${AWS::Region}
+  #                     - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata
+  #             - Sid: allowkmsfordepls3
+  #               Effect: Allow
+  #               Action:
+  #                 - kms:DescribeKey
+  #                 - kms:Decrypt
+  #                 - kms:Encrypt
+  #                 - kms:GenerateDataKey
+  #               Resource: '*'
+  #       - PolicyName: AllowServiceVerificationBucketAccess
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Sid: allows3getartifact
+  #               Effect: Allow
+  #               Action:
+  #                 - s3:Get*
+  #                 - s3:Put*
+  #               Resource: 
+  #                 # - !Sub arn:aws:s3:::${pProduct}-s3-${pEnvironment}-app3-${AWS::Region}/*
+  #                 - !Sub arn:aws:s3:::ab-app2-app-s3-${pEnvironment}-userdata-${AWS::Region}/*
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3/*
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
+  #             - Sid: allows3list
+  #               Effect: Allow
+  #               Action:
+  #                 - s3:ListBucket
+  #               Resource: 
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3/*
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
+  #       - PolicyName: CodeDeployAccess
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Sid: allowcodedeploystop
+  #               Effect: Allow
+  #               Action:
+  #                 - codedeploy:ListDeployments
+  #                 - codedeploy:StopDeployment
+  #                 - codedeploy:GetDeployment
+  #                 - codedeploy:ListDeploymentInstances
+  #               Resource:
+  #                 - !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:* #${ApplicationName}/${DeploymentGroupName}
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-role-${pEnvironment}-instance-${AWS::Region}
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: IAM Role for Application EC2 Instance
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
-  rApplicationInstanceProfile:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - !Ref rApplicationInstanceRole
+  # rApplicationInstanceProfile:
+  #   Type: AWS::IAM::InstanceProfile
+  #   Properties:
+  #     Roles:
+  #       - !Ref rApplicationInstanceRole
 
-  rApplicationSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: !Sub ${pProduct}-secgroup-${pEnvironment}-instances
-      VpcId: !Ref pVPCId
-      GroupDescription: Enable Outbound Internet and Console NLB Ingress Access to Application Instances
-      SecurityGroupIngress:
-        - IpProtocol: -1
-          FromPort: -1
-          ToPort: -1
-          CidrIp: 127.0.0.1/32
-          Description: Default local host all traffic
-        # - IpProtocol: tcp
-        #   FromPort: 1000
-        #   ToPort: 1000
-        #   SourceSecurityGroupId: !Ref rConsoleALBSecurityGroup
-        # - IpProtocol: tcp
-        #   FromPort: 443
-        #   ToPort: 443
-        #   SourceSecurityGroupId: !Ref rConsoleALBSecurityGroup    
-        # - IpProtocol: tcp
-        #   FromPort: 1000
-        #   ToPort: 1000
-        #   SourceSecurityGroupId: !Ref rPublicALBSecurityGroup01
-        # - IpProtocol: tcp
-        #   FromPort: 443
-        #   ToPort: 443
-        #   SourceSecurityGroupId: !Ref rPublicALBSecurityGroup01
-      SecurityGroupEgress:
-      # IOT DB connection to on-prem
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/32
-          FromPort: 80
-          ToPort: 80
-          Description: Allow Outbound to New Relic Proxy
-        ##RabbitMQ
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
-          Description: Egress to Amazon MQ for Rabbit MQ
-        - IpProtocol: tcp
-          FromPort: 5671
-          ToPort: 5671
-          DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
-          Description: Egress to Amazon MQ for Rabbit MQ  
-        # - IpProtocol: tcp
-        #   FromPort: 5671
-        #   ToPort: 5671
-        #   CidrIp: !Ref pMQcidr1
-        #   Description: Egress to IntraSubnet1 for Rabbit MQ Custom DNS
-        # - IpProtocol: tcp
-        #   FromPort: 5432
-        #   ToPort: 5432
-        #   CidrIp: !Select [0, !Ref pDbCidr]
-        #   Description: Egress to Aurora Global DB Subnet 1
-        # - IpProtocol: tcp
-        #   FromPort: 5432
-        #   ToPort: 5432
-        #   CidrIp: !Select [1, !Ref pDbCidr]
-        #   Description: Egress to Aurora Global DB Subnet 2
-        # - IpProtocol: tcp
-        #   FromPort: 5432
-        #   ToPort: 5432
-        #   CidrIp: !Select [2, !Ref pDbCidr]
-        #   Description: Egress to Aurora Global DB Subnet 3
-        # - !If
-        #   - cIsDev
-        #   - !Ref AWS::NoValue
-        #   - IpProtocol: tcp
-        #     FromPort: 5671
-        #     ToPort: 5671
-        #     CidrIp: !Ref pMQcidr2
-        #     Description: Egress to IntraSubnet2 for Rabbit MQ Custom DNS  
-        # - !If
-        #   - cIsDev
-        #   - !Ref AWS::NoValue
-        #   - IpProtocol: tcp
-        #     FromPort: 5671
-        #     ToPort: 5671
-        #     CidrIp: !Ref pMQcidr3
-        #     Description: Egress to IntraSubnet3 for Rabbit MQ Custom DNS  
-        ###Add rules for AWS Postgress Database connection CIDRs when acquired####
+  # rApplicationSecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:
+  #     GroupName: !Sub ${pProduct}-secgroup-${pEnvironment}-instances
+  #     VpcId: !Ref pVPCId
+  #     GroupDescription: Enable Outbound Internet and Console NLB Ingress Access to Application Instances
+  #     SecurityGroupIngress:
+  #       - IpProtocol: -1
+  #         FromPort: -1
+  #         ToPort: -1
+  #         CidrIp: 127.0.0.1/32
+  #         Description: Default local host all traffic
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 1000
+  #       #   ToPort: 1000
+  #       #   SourceSecurityGroupId: !Ref rConsoleALBSecurityGroup
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 443
+  #       #   ToPort: 443
+  #       #   SourceSecurityGroupId: !Ref rConsoleALBSecurityGroup    
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 1000
+  #       #   ToPort: 1000
+  #       #   SourceSecurityGroupId: !Ref rPublicALBSecurityGroup01
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 443
+  #       #   ToPort: 443
+  #       #   SourceSecurityGroupId: !Ref rPublicALBSecurityGroup01
+  #     SecurityGroupEgress:
+  #     # IOT DB connection to on-prem
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/32
+  #         FromPort: 80
+  #         ToPort: 80
+  #         Description: Allow Outbound to New Relic Proxy
+  #       ##RabbitMQ
+  #       - IpProtocol: tcp
+  #         FromPort: 443
+  #         ToPort: 443
+  #         DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
+  #         Description: Egress to Amazon MQ for Rabbit MQ
+  #       - IpProtocol: tcp
+  #         FromPort: 5671
+  #         ToPort: 5671
+  #         DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
+  #         Description: Egress to Amazon MQ for Rabbit MQ  
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5671
+  #       #   ToPort: 5671
+  #       #   CidrIp: !Ref pMQcidr1
+  #       #   Description: Egress to IntraSubnet1 for Rabbit MQ Custom DNS
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5432
+  #       #   ToPort: 5432
+  #       #   CidrIp: !Select [0, !Ref pDbCidr]
+  #       #   Description: Egress to Aurora Global DB Subnet 1
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5432
+  #       #   ToPort: 5432
+  #       #   CidrIp: !Select [1, !Ref pDbCidr]
+  #       #   Description: Egress to Aurora Global DB Subnet 2
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5432
+  #       #   ToPort: 5432
+  #       #   CidrIp: !Select [2, !Ref pDbCidr]
+  #       #   Description: Egress to Aurora Global DB Subnet 3
+  #       # - !If
+  #       #   - cIsDev
+  #       #   - !Ref AWS::NoValue
+  #       #   - IpProtocol: tcp
+  #       #     FromPort: 5671
+  #       #     ToPort: 5671
+  #       #     CidrIp: !Ref pMQcidr2
+  #       #     Description: Egress to IntraSubnet2 for Rabbit MQ Custom DNS  
+  #       # - !If
+  #       #   - cIsDev
+  #       #   - !Ref AWS::NoValue
+  #       #   - IpProtocol: tcp
+  #       #     FromPort: 5671
+  #       #     ToPort: 5671
+  #       #     CidrIp: !Ref pMQcidr3
+  #       #     Description: Egress to IntraSubnet3 for Rabbit MQ Custom DNS  
+  #       ###Add rules for AWS Postgress Database connection CIDRs when acquired####
         
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-secgroup-${pEnvironment}-instances
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Security Group to allow access to Application Instances by Console ALB
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-secgroup-${pEnvironment}-instances
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: Security Group to allow access to Application Instances by Console ALB
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
-  ### Application ASG/Target Group/Template Resources
-  rApplicationTargetGroupConsole:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Name: !Sub ${pProduct}-tg-${pEnvironment}
-      Port: 1000
-      Protocol: "HTTPS" #S
-      VpcId: !Ref pVPCId
-      HealthCheckEnabled: true
-      HealthyThresholdCount: 5
-      UnhealthyThresholdCount: 2
-      HealthCheckProtocol: "HTTPS"
-      HealthCheckPort: 1000
-      HealthCheckPath: "/app/isAlive.jsp"
-      # TargetGroupAttributes: 
-      #   - Key: stickiness.enabled
-      #   - Value: true
-      #   # - Key: stickiness.type
-      #   # - Value: lb_cookie
-      #   # - Key: stickiness.lb_cookie.duration_seconds
-      #   # - Value: 3600
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-tg-${pEnvironment}-console
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Target Group for Application Instances
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  # ### Application ASG/Target Group/Template Resources
+  # rApplicationTargetGroupConsole:
+  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  #   Properties:
+  #     Name: !Sub ${pProduct}-tg-${pEnvironment}
+  #     Port: 1000
+  #     Protocol: "HTTPS" #S
+  #     VpcId: !Ref pVPCId
+  #     HealthCheckEnabled: true
+  #     HealthyThresholdCount: 5
+  #     UnhealthyThresholdCount: 2
+  #     HealthCheckProtocol: "HTTPS"
+  #     HealthCheckPort: 1000
+  #     HealthCheckPath: "/app/isAlive.jsp"
+  #     # TargetGroupAttributes: 
+  #     #   - Key: stickiness.enabled
+  #     #   - Value: true
+  #     #   # - Key: stickiness.type
+  #     #   # - Value: lb_cookie
+  #     #   # - Key: stickiness.lb_cookie.duration_seconds
+  #     #   # - Value: 3600
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-tg-${pEnvironment}-console
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: Target Group for Application Instances
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
-  rApplicationTargetGroupConsoleiot:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Name: !Sub ${pProduct}-tg-${pEnvironment}-con-iot
-      Port: 1000
-      Protocol: "HTTPS" #S
-      VpcId: !Ref pVPCId
-      HealthCheckEnabled: true
-      HealthyThresholdCount: 5
-      UnhealthyThresholdCount: 2
-      HealthCheckProtocol: "HTTPS"
-      HealthCheckPort: 1000
-      HealthCheckPath:  "/app/iot/isAlive.jsp"
-      # TargetGroupAttributes: 
-      #   - Key: stickiness.enabled
-      #   - Value: true
-      #   # - Key: stickiness.type
-      #   # - Value: lb_cookie
-      #   - Key: stickiness.lb_cookie.duration_seconds
-      #   - Value: 3600
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-tg-${pEnvironment}-console-iot
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Target Group for Application Instances
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  # rApplicationTargetGroupConsoleiot:
+  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  #   Properties:
+  #     Name: !Sub ${pProduct}-tg-${pEnvironment}-con-iot
+  #     Port: 1000
+  #     Protocol: "HTTPS" #S
+  #     VpcId: !Ref pVPCId
+  #     HealthCheckEnabled: true
+  #     HealthyThresholdCount: 5
+  #     UnhealthyThresholdCount: 2
+  #     HealthCheckProtocol: "HTTPS"
+  #     HealthCheckPort: 1000
+  #     HealthCheckPath:  "/app/iot/isAlive.jsp"
+  #     # TargetGroupAttributes: 
+  #     #   - Key: stickiness.enabled
+  #     #   - Value: true
+  #     #   # - Key: stickiness.type
+  #     #   # - Value: lb_cookie
+  #     #   - Key: stickiness.lb_cookie.duration_seconds
+  #     #   - Value: 3600
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-tg-${pEnvironment}-console-iot
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: Target Group for Application Instances
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
-  ###app3 Network Load Balancer target group
-  rApplicationTargetGroupPublic:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Name: !Sub ${pProduct}-tg-${pEnvironment}-public-1
-      Port: 1000
-      Protocol: HTTPS
-      VpcId: !Ref pVPCId
-      HealthCheckEnabled: true
-      HealthyThresholdCount: 5
-      UnhealthyThresholdCount: 2
-      HealthCheckProtocol: "HTTPS"
-      HealthCheckPort: 1000
-      HealthCheckPath: "/app/isAlive.jsp"
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-tg-${pEnvironment}-public
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Target Group for Application Instances
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  # ###app3 Network Load Balancer target group
+  # rApplicationTargetGroupPublic:
+  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  #   Properties:
+  #     Name: !Sub ${pProduct}-tg-${pEnvironment}-public-1
+  #     Port: 1000
+  #     Protocol: HTTPS
+  #     VpcId: !Ref pVPCId
+  #     HealthCheckEnabled: true
+  #     HealthyThresholdCount: 5
+  #     UnhealthyThresholdCount: 2
+  #     HealthCheckProtocol: "HTTPS"
+  #     HealthCheckPort: 1000
+  #     HealthCheckPath: "/app/isAlive.jsp"
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-tg-${pEnvironment}-public
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: Target Group for Application Instances
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
-  rApplicationTargetGroupPubliciot:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Name: !Sub ${pProduct}-tg-${pEnvironment}-pub-iot
-      Port: 1000
-      Protocol: HTTPS
-      VpcId: !Ref pVPCId
-      HealthCheckEnabled: true
-      HealthyThresholdCount: 5
-      UnhealthyThresholdCount: 2
-      HealthCheckProtocol: "HTTPS"
-      HealthCheckPort: 1000
-      HealthCheckPath: "/app/iot/isAlive.jsp"
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-tg-${pEnvironment}-pub-iot
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Target Group for Application Instances
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  # rApplicationTargetGroupPubliciot:
+  #   Type: AWS::ElasticLoadBalancingV2::TargetGroup
+  #   Properties:
+  #     Name: !Sub ${pProduct}-tg-${pEnvironment}-pub-iot
+  #     Port: 1000
+  #     Protocol: HTTPS
+  #     VpcId: !Ref pVPCId
+  #     HealthCheckEnabled: true
+  #     HealthyThresholdCount: 5
+  #     UnhealthyThresholdCount: 2
+  #     HealthCheckProtocol: "HTTPS"
+  #     HealthCheckPort: 1000
+  #     HealthCheckPath: "/app/iot/isAlive.jsp"
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-tg-${pEnvironment}-pub-iot
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: Target Group for Application Instances
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
   # rApplicationInstanceASG:
   #   Type: AWS::AutoScaling::AutoScalingGroup
@@ -1113,288 +1113,288 @@ Resources:
 
   #app3 Resources
   ## app3 Cluster IAM Resources
-  rapp3InstanceRole:
-    #Condition: cIsProd
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName: !Sub ${pProduct}-role-${pEnvironment}-app3-${AWS::Region}
-      AssumeRolePolicyDocument:
-        Statement:
-          - Action: sts:AssumeRole
-            Effect: Allow
-            Principal:
-              Service: ec2.amazonaws.com
-        Version: "2012-10-17"
-      ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
-        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
-      PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/team-fed-svcrole-boundary
-      Policies:
-        - PolicyName: AllowKMSAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:   
-              - Sid: allowsecretaccess
-                Effect: Allow
-                Action:
-                  - secretsmanager:GetSecretValue
-                Resource: 
-                  - !ImportValue iSSPubArn
-                  - !ImportValue iSSPrivArn
-                  - !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-aurora-postgresql/aurora/*
-                  - !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-app-secret-${pEnvironment}-rabbituser*
-              - Sid: allowkmsforsecrets
-                Effect: Allow
-                Action:
-                  - kms:DescribeKey
-                  - kms:Decrypt
-                  - kms:Encrypt
-                  - kms:GenerateDataKey
-                Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
-                Condition:
-                  ForAnyValue:StringEquals:
-                    kms:ResourceAliases:
-                      - !Sub alias/ab-app2-app-app-ss-secrets
-                      - !Sub alias/ab-app-aurora-postgresql-db-root-secret-key
-                      - !Sub alias/ab-app-aurora-postgresql-db-user-secret-key
-                      - !Sub alias/ab-app-aurora-postgresql-AuroraClusterKey
-                      - !Sub alias/${pProduct}-rabbit-user-pwd-key  
-              - Sid: allowkmsfors3
-                Effect: Allow
-                Action:
-                  - kms:DescribeKey
-                  - kms:Decrypt
-                  - kms:Encrypt
-                  - kms:GenerateDataKey
-                Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
-                Condition:
-                  ForAnyValue:StringEquals:
-                    kms:ResourceAliases:
-                      - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata
-                      - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata-us-west-2
-              - Sid: allowkmsfordepls3
-                Effect: Allow
-                Action:
-                  - kms:DescribeKey
-                  - kms:Decrypt
-                  - kms:Encrypt
-                  - kms:GenerateDataKey
-                Resource: '*'
-        - PolicyName: AllowServiceVerificationBucketAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Sid: allows3getartifact
-                Effect: Allow
-                Action:
-                  - s3:Get*
-                  - s3:Put*
-                Resource: 
-                  # - !Sub arn:aws:s3:::${pProduct}-s3-${pEnvironment}-app3-${AWS::Region}/*
-                  - !Sub arn:aws:s3:::ab-app2-app-s3-${pEnvironment}-userdata-${AWS::Region}/*
-                  - arn:aws:s3:::team-device-app-jenkins-s3/*
-                  - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
-              - Sid: allows3list
-                Effect: Allow
-                Action:
-                  - s3:ListBucket
-                Resource: 
-                  - arn:aws:s3:::team-device-app-jenkins-s3/*
-                  - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
-        - PolicyName: CodeDeployAccess
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-              - Sid: allowcodedeploystop
-                Effect: Allow
-                Action:
-                  - codedeploy:ListDeployments
-                  - codedeploy:StopDeployment
-                  - codedeploy:GetDeployment
-                  - codedeploy:ListDeploymentInstances
-                Resource:
-                  - !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:* #${ApplicationName}/${DeploymentGroupName}
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-role-${pEnvironment}-app3-${AWS::Region}
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: IAM Role for app3 EC2 Instance
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  # rapp3InstanceRole:
+  #   #Condition: cIsProd
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     RoleName: !Sub ${pProduct}-role-${pEnvironment}-app3-${AWS::Region}
+  #     AssumeRolePolicyDocument:
+  #       Statement:
+  #         - Action: sts:AssumeRole
+  #           Effect: Allow
+  #           Principal:
+  #             Service: ec2.amazonaws.com
+  #       Version: "2012-10-17"
+  #     ManagedPolicyArns:
+  #       - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+  #       - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+  #     PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/team-fed-svcrole-boundary
+  #     Policies:
+  #       - PolicyName: AllowKMSAccess
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:   
+  #             - Sid: allowsecretaccess
+  #               Effect: Allow
+  #               Action:
+  #                 - secretsmanager:GetSecretValue
+  #               Resource: 
+  #                 - !ImportValue iSSPubArn
+  #                 - !ImportValue iSSPrivArn
+  #                 - !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-aurora-postgresql/aurora/*
+  #                 - !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-app-secret-${pEnvironment}-rabbituser*
+  #             - Sid: allowkmsforsecrets
+  #               Effect: Allow
+  #               Action:
+  #                 - kms:DescribeKey
+  #                 - kms:Decrypt
+  #                 - kms:Encrypt
+  #                 - kms:GenerateDataKey
+  #               Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
+  #               Condition:
+  #                 ForAnyValue:StringEquals:
+  #                   kms:ResourceAliases:
+  #                     - !Sub alias/ab-app2-app-app-ss-secrets
+  #                     - !Sub alias/ab-app-aurora-postgresql-db-root-secret-key
+  #                     - !Sub alias/ab-app-aurora-postgresql-db-user-secret-key
+  #                     - !Sub alias/ab-app-aurora-postgresql-AuroraClusterKey
+  #                     - !Sub alias/${pProduct}-rabbit-user-pwd-key  
+  #             - Sid: allowkmsfors3
+  #               Effect: Allow
+  #               Action:
+  #                 - kms:DescribeKey
+  #                 - kms:Decrypt
+  #                 - kms:Encrypt
+  #                 - kms:GenerateDataKey
+  #               Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
+  #               Condition:
+  #                 ForAnyValue:StringEquals:
+  #                   kms:ResourceAliases:
+  #                     - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata
+  #                     - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata-us-west-2
+  #             - Sid: allowkmsfordepls3
+  #               Effect: Allow
+  #               Action:
+  #                 - kms:DescribeKey
+  #                 - kms:Decrypt
+  #                 - kms:Encrypt
+  #                 - kms:GenerateDataKey
+  #               Resource: '*'
+  #       - PolicyName: AllowServiceVerificationBucketAccess
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Sid: allows3getartifact
+  #               Effect: Allow
+  #               Action:
+  #                 - s3:Get*
+  #                 - s3:Put*
+  #               Resource: 
+  #                 # - !Sub arn:aws:s3:::${pProduct}-s3-${pEnvironment}-app3-${AWS::Region}/*
+  #                 - !Sub arn:aws:s3:::ab-app2-app-s3-${pEnvironment}-userdata-${AWS::Region}/*
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3/*
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
+  #             - Sid: allows3list
+  #               Effect: Allow
+  #               Action:
+  #                 - s3:ListBucket
+  #               Resource: 
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3/*
+  #                 - arn:aws:s3:::team-device-app-jenkins-s3-us-west-2/*
+  #       - PolicyName: CodeDeployAccess
+  #         PolicyDocument:
+  #           Version: '2012-10-17'
+  #           Statement:
+  #             - Sid: allowcodedeploystop
+  #               Effect: Allow
+  #               Action:
+  #                 - codedeploy:ListDeployments
+  #                 - codedeploy:StopDeployment
+  #                 - codedeploy:GetDeployment
+  #                 - codedeploy:ListDeploymentInstances
+  #               Resource:
+  #                 - !Sub arn:aws:codedeploy:${AWS::Region}:${AWS::AccountId}:deploymentgroup:* #${ApplicationName}/${DeploymentGroupName}
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-role-${pEnvironment}-app3-${AWS::Region}
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: IAM Role for app3 EC2 Instance
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
-  rapp3InstanceProfile:
-    #Condition: cIsProd
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - !Ref rapp3InstanceRole
+  # rapp3InstanceProfile:
+  #   #Condition: cIsProd
+  #   Type: AWS::IAM::InstanceProfile
+  #   Properties:
+  #     Roles:
+  #       - !Ref rapp3InstanceRole
 
-  ### Security Group Resources
-  rapp3SecurityGroup:
-    #Condition: cIsProd
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupName: !Sub ${pProduct}-app3-secgroup-${pEnvironment}
-      VpcId: !Ref pVPCId
-      GroupDescription: Enable Inbound Intranet Subnet and App ASG Connectivity From to app3 Instance
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/23
-          FromPort: 40001
-          ToPort: 40001
-          Description: Allow ingress for app3 to connect to eps
-        # - IpProtocol: tcp
-        #   FromPort: 40001 #443
-        #   ToPort: 40001 #443
-        #   CidrIp: !Ref pIntraSubnetCIDR1
-        #   Description: inbound from Intra Subnet 1
-        # - IpProtocol: tcp
-        #   FromPort: 40001 #443
-        #   ToPort: 40001 #443
-        #   CidrIp: !Ref pIntraSubnetCIDR2
-        #   Description: inbound from Intra Subnet 2
-        # - IpProtocol: tcp
-        #   FromPort: 40001 #443
-        #   ToPort: 40001 #443
-        #   CidrIp: !Ref pIntraSubnetCIDR3
-        #   Description: inbound from Intra Subnet 3
-        # - IpProtocol: tcp
-        #   FromPort: 1000 #443
-        #   ToPort: 1000 #443
-        #   CidrIp: !Ref pIntraSubnetCIDR1
-        #   Description: inbound from Intra Subnet 1
-        # - IpProtocol: tcp
-        #   FromPort: 1000 #443
-        #   ToPort: 1000 #443
-        #   CidrIp: !Ref pIntraSubnetCIDR2
-        #   Description: inbound from Intra Subnet 2
-        # - IpProtocol: tcp
-        #   FromPort: 1000 #443
-        #   ToPort: 1000 #443
-        #   CidrIp: !Ref pIntraSubnetCIDR3
-        #   Description: inbound from Intra Subnet 3
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/23
-          FromPort: 40001
-          ToPort: 40001
-          Description: Allow Egress for app3 to connect to eps
-        # Allow SMTP Server access
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/32
-          FromPort: 25
-          ToPort: 25
-          Description: Allow Egress to SMTP Server
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/32
-          FromPort: 25
-          ToPort: 25
-          Description: Allow Egress to SMTP Server
-      # Proxy
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/26
-          FromPort: 8080
-          ToPort: 8080
-          Description: Allow Egress to team Proxy US East 1
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/25
-          FromPort: 8080
-          ToPort: 8080
-          Description: Allow Egress to team Proxy US East 1
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/26
-          FromPort: 8080
-          ToPort: 8080
-          Description: Allow Egress to team Proxy US West 2
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/26
-          FromPort: 8080
-          ToPort: 8080
-          Description: Allow Egress to team Proxy US West 2
-        - IpProtocol: tcp
-          FromPort: 80 #443
-          ToPort: 80 #443
-          CidrIp: 127.0.0.1/32
-          Description: Default local host all traffic
-        ## New Relic Proxies
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/32
-          FromPort: 80
-          ToPort: 80
-          Description: Allow Outbound to New Relic Proxy
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/32
-          FromPort: 80
-          ToPort: 80
-          Description: Allow Outbound to New Relic Proxy
-        - IpProtocol: tcp
-          CidrIp: 0.0.0.0/32
-          FromPort: 80
-          ToPort: 80
-          Description: Allow Outbound to New Relic Proxy
-        ##RabbitMQ
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
-          Description: Egress to Amazon MQ for Rabbit MQ
-        - IpProtocol: tcp
-          FromPort: 5671
-          ToPort: 5671
-          DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
-          Description: Egress to Amazon MQ for Rabbit MQ  
-        # - IpProtocol: tcp
-        #   FromPort: 5671
-        #   ToPort: 5671
-        #   CidrIp: !Ref pMQcidr1
-        #   Description: Egress to IntraSubnet1 for Rabbit MQ Custom DNS
-        # - IpProtocol: tcp
-        #   FromPort: 5432
-        #   ToPort: 5432
-        #   CidrIp: !Select [0, !Ref pDbCidr]
-        #   Description: Egress to Aurora Global DB Subnet 1
-        # - IpProtocol: tcp
-        #   FromPort: 5432
-        #   ToPort: 5432
-        #   CidrIp: !Select [1, !Ref pDbCidr]
-        #   Description: Egress to Aurora Global DB Subnet 2
-        # - IpProtocol: tcp
-        #   FromPort: 5432
-        #   ToPort: 5432
-        #   CidrIp: !Select [2, !Ref pDbCidr]
-        #   Description: Egress to Aurora Global DB Subnet 3
+  # ### Security Group Resources
+  # rapp3SecurityGroup:
+  #   #Condition: cIsProd
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:
+  #     GroupName: !Sub ${pProduct}-app3-secgroup-${pEnvironment}
+  #     VpcId: !Ref pVPCId
+  #     GroupDescription: Enable Inbound Intranet Subnet and App ASG Connectivity From to app3 Instance
+  #     SecurityGroupIngress:
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/23
+  #         FromPort: 40001
+  #         ToPort: 40001
+  #         Description: Allow ingress for app3 to connect to eps
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 40001 #443
+  #       #   ToPort: 40001 #443
+  #       #   CidrIp: !Ref pIntraSubnetCIDR1
+  #       #   Description: inbound from Intra Subnet 1
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 40001 #443
+  #       #   ToPort: 40001 #443
+  #       #   CidrIp: !Ref pIntraSubnetCIDR2
+  #       #   Description: inbound from Intra Subnet 2
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 40001 #443
+  #       #   ToPort: 40001 #443
+  #       #   CidrIp: !Ref pIntraSubnetCIDR3
+  #       #   Description: inbound from Intra Subnet 3
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 1000 #443
+  #       #   ToPort: 1000 #443
+  #       #   CidrIp: !Ref pIntraSubnetCIDR1
+  #       #   Description: inbound from Intra Subnet 1
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 1000 #443
+  #       #   ToPort: 1000 #443
+  #       #   CidrIp: !Ref pIntraSubnetCIDR2
+  #       #   Description: inbound from Intra Subnet 2
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 1000 #443
+  #       #   ToPort: 1000 #443
+  #       #   CidrIp: !Ref pIntraSubnetCIDR3
+  #       #   Description: inbound from Intra Subnet 3
+  #     SecurityGroupEgress:
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/23
+  #         FromPort: 40001
+  #         ToPort: 40001
+  #         Description: Allow Egress for app3 to connect to eps
+  #       # Allow SMTP Server access
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/32
+  #         FromPort: 25
+  #         ToPort: 25
+  #         Description: Allow Egress to SMTP Server
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/32
+  #         FromPort: 25
+  #         ToPort: 25
+  #         Description: Allow Egress to SMTP Server
+  #     # Proxy
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/26
+  #         FromPort: 8080
+  #         ToPort: 8080
+  #         Description: Allow Egress to team Proxy US East 1
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/25
+  #         FromPort: 8080
+  #         ToPort: 8080
+  #         Description: Allow Egress to team Proxy US East 1
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/26
+  #         FromPort: 8080
+  #         ToPort: 8080
+  #         Description: Allow Egress to team Proxy US West 2
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/26
+  #         FromPort: 8080
+  #         ToPort: 8080
+  #         Description: Allow Egress to team Proxy US West 2
+  #       - IpProtocol: tcp
+  #         FromPort: 80 #443
+  #         ToPort: 80 #443
+  #         CidrIp: 127.0.0.1/32
+  #         Description: Default local host all traffic
+  #       ## New Relic Proxies
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/32
+  #         FromPort: 80
+  #         ToPort: 80
+  #         Description: Allow Outbound to New Relic Proxy
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/32
+  #         FromPort: 80
+  #         ToPort: 80
+  #         Description: Allow Outbound to New Relic Proxy
+  #       - IpProtocol: tcp
+  #         CidrIp: 0.0.0.0/32
+  #         FromPort: 80
+  #         ToPort: 80
+  #         Description: Allow Outbound to New Relic Proxy
+  #       ##RabbitMQ
+  #       - IpProtocol: tcp
+  #         FromPort: 443
+  #         ToPort: 443
+  #         DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
+  #         Description: Egress to Amazon MQ for Rabbit MQ
+  #       - IpProtocol: tcp
+  #         FromPort: 5671
+  #         ToPort: 5671
+  #         DestinationSecurityGroupId: !Ref rRabbitMQClusterSecurityGroup
+  #         Description: Egress to Amazon MQ for Rabbit MQ  
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5671
+  #       #   ToPort: 5671
+  #       #   CidrIp: !Ref pMQcidr1
+  #       #   Description: Egress to IntraSubnet1 for Rabbit MQ Custom DNS
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5432
+  #       #   ToPort: 5432
+  #       #   CidrIp: !Select [0, !Ref pDbCidr]
+  #       #   Description: Egress to Aurora Global DB Subnet 1
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5432
+  #       #   ToPort: 5432
+  #       #   CidrIp: !Select [1, !Ref pDbCidr]
+  #       #   Description: Egress to Aurora Global DB Subnet 2
+  #       # - IpProtocol: tcp
+  #       #   FromPort: 5432
+  #       #   ToPort: 5432
+  #       #   CidrIp: !Select [2, !Ref pDbCidr]
+  #       #   Description: Egress to Aurora Global DB Subnet 3
         
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-secgroup-app3-${pEnvironment}-instances
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Security Group to allow access to Application Instances by Console ALB
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+  #     Tags:
+  #       - Key: Name
+  #         Value: !Sub ${pProduct}-secgroup-app3-${pEnvironment}-instances
+  #       - Key: team:lifecycle
+  #         Value: !Ref pEnvironment
+  #       - Key: team:vsad
+  #         Value: !Ref pVsadTag
+  #       - Key: team:vast-id
+  #         Value: !Ref pVastTag
+  #       - Key: team:purpose
+  #         Value: Security Group to allow access to Application Instances by Console ALB
+  #       - Key: team:dataclass
+  #         Value: !Ref pTagteamDataclass
+  #       - Key: team:launched-by
+  #         Value: !Ref pTagteamLaunchedBy
+  #       - Key: team:resource-custodian
+  #         Value: !Ref pTagteamResourceCustodian
+  #       - Key: team:team-owner
+  #         Value: !Ref pTagteamTeamOwner
 
   # rapp3SecurityGroupEgressAppSub1:
   #   #Condition: cIsProd
