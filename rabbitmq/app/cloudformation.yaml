@@ -7,7 +7,7 @@ Parameters:
   pProduct:
     Description: Name of the instance
     Type: String
-    Default: IS'
+    Default: is'
   pEnvironment:
     Description: Environment Name
     Type: String
