@@ -2048,8 +2048,7 @@ Resources:
         Statement:
           - Sid: Enable IAM and allow interactive (human) role(s) key use permissions
             Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/team-sso-superadmin-${pEnvironment}
+            Principal: '*'
             Action:
             - kms:Encrypt
             - kms:Decrypt
@@ -2080,19 +2079,18 @@ Resources:
                   - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/*
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
-            Principal:
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/CodePipeline-Action
+            Principal: '*'
             Action:
             - kms:CreateGrant
             - kms:ListGrants
             - kms:RetireGrant
             - kms:RevokeGrant
             Resource: '*'
-            Condition:
-              Bool:
-                kms:GrantIsForAWSResource: !!bool 'true'
-              StringEquals:
-                aws:PrincipalAccount: !Ref AWS::AccountId
+            # Condition:
+            #   Bool:
+            #     kms:GrantIsForAWSResource: !!bool 'true'
+            #   StringEquals:
+            #     aws:PrincipalAccount: !Ref AWS::AccountId
           - Sid: Key administration permissions
             Effect: Allow
             Principal:
