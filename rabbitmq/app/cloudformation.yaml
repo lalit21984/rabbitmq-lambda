@@ -2059,7 +2059,7 @@ Resources:
             Condition:
               ArnLike:
                 aws:PrincipalArn:
-                  - !Sub arn:aws:iam::${AWS::AccountId}:role/team*sso*
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/*
           - Sid: Enable IAM and allow service (non-human) role(s) key use permissions
             Effect: Allow
             Principal:
@@ -2086,19 +2086,19 @@ Resources:
             - kms:RetireGrant
             - kms:RevokeGrant
             Resource: '*'
-            # Condition:
-            #   Bool:
-            #     kms:GrantIsForAWSResource: !!bool 'true'
-            #   StringEquals:
-            #     aws:PrincipalAccount: !Ref AWS::AccountId
-          - Sid: Key administration permissions
-            Effect: Allow
-            Principal:
-              AWS:
-              - Fn::Sub: arn:aws:iam::${AWS::AccountId}:root
-            Action:
-            - kms:*
-            Resource: '*'
+            Condition:
+              Bool:
+                kms:GrantIsForAWSResource: !!bool 'true'
+              StringEquals:
+                aws:PrincipalAccount: !Ref AWS::AccountId
+            # - Sid: Key administration permissions
+            #   Effect: Allow
+            #   Principal:
+            #     AWS:
+            #     - Fn::Sub: arn:aws:iam::${AWS::AccountId}:root
+            #   Action:
+            #   - kms:*
+            #   Resource: '*'
       PendingWindowInDays: !!int '30'
       Tags:
         - Key: Name
@@ -2216,10 +2216,10 @@ Resources:
             - kms:GenerateDataKey*
             - kms:DescribeKey
             Resource: '*'
-            # Condition:
-            #   ArnLike:
-            #     aws:PrincipalArn:
-            #       - !Sub arn:aws:iam::${AWS::AccountId}:role/team*sso*
+            Condition:
+              ArnLike:
+                aws:PrincipalArn:
+                  - !Sub arn:aws:iam::${AWS::AccountId}:role/*
           - Sid: Enable IAM and allow service (non-human) role(s) key use permissions
             Effect: Allow
             Principal:
@@ -2231,12 +2231,12 @@ Resources:
             - kms:GenerateDataKey*
             - kms:DescribeKey
             Resource: '*'
-            # Condition:
-            #   'Null':
-            #     kms:ViaService: !!bool 'false'
-            #   ArnLike:
-            #     aws:PrincipalArn:
-            #       - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/*
+            Condition:
+              'Null':
+                kms:ViaService: !!bool 'false'
+              ArnLike:
+                aws:PrincipalArn:
+                  - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/*
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
             Principal: '*'
@@ -2246,19 +2246,19 @@ Resources:
             - kms:RetireGrant
             - kms:RevokeGrant
             Resource: '*'
-            # Condition:
-            #   Bool:
-            #     kms:GrantIsForAWSResource: !!bool 'true'
-            #   StringEquals:
-            #     aws:PrincipalAccount: !Ref AWS::AccountId
-          - Sid: Key administration permissions
-            Effect: Allow
-            Principal:
-              AWS:
-              - Fn::Sub: arn:aws:iam::${AWS::AccountId}:root
-            Action:
-            - kms:*
-            Resource: '*'
+            Condition:
+              Bool:
+                kms:GrantIsForAWSResource: !!bool 'true'
+              StringEquals:
+                aws:PrincipalAccount: !Ref AWS::AccountId
+          # - Sid: Key administration permissions
+          #   Effect: Allow
+          #   Principal:
+          #     AWS:
+          #     - Fn::Sub: arn:aws:iam::${AWS::AccountId}:root
+          #   Action:
+          #   - kms:*
+          #   Resource: '*'
       PendingWindowInDays: !!int '30'
       Tags:
         - Key: Name

@@ -9,9 +9,9 @@
     build:
       commands:
         - echo $(pwd)
-        - cd RabbitLambda
+        - cd rabbitmq/RabbitLambda
         - zip -r RabbitLambda.zip *
-        - mv RabbitLambda.zip ../
+        #- mv RabbitLambda.zip ../
         - cd ..
         
         - aws s3 cp RabbitLambda.zip s3://$CODE_BUCKET_R1/$BUCKET_PREFIX/RabbitLambda.zip
