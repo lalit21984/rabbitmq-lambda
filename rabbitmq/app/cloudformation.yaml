@@ -46,13 +46,17 @@ Parameters:
     AllowedPattern: '[^\s@]+@[^\s@]+\.[^\s@]+'
     Default: lalit.sahu@mail.com # REPLACE ME
   pVsadTag:
-    Type: 'AWS::SSM::Parameter::Value<String>'
+    #Type: 'AWS::SSM::Parameter::Value<String>'
+    Type: String
     Description: VZ VSAD ID
-    Default: '/accounts/vsad/id'
+    #Default: '/accounts/vsad/id'
+    Default: 'Dummyvastid'
   pVastTag:
-    Type: 'AWS::SSM::Parameter::Value<String>'
+    #Type: 'AWS::SSM::Parameter::Value<String>'
+    Type: String
     Description: VZ VAST ID
-    Default: '/accounts/vast/id'
+    #Default: '/accounts/vast/id'
+    Default: 'Dummyvastid'
   # pALBAccessLogBucketParam:
   #   Type: 'AWS::SSM::Parameter::Value<String>'
   #   Description: ALB Access Log Bucket
