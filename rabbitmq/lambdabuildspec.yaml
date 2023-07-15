@@ -30,4 +30,4 @@
         - cat output.json
   artifacts:
     files:
-      - rabbitmq/RabbitLambda/output.json
+      - rabbitmq/output.json
