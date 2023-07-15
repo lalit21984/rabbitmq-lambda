@@ -30,4 +30,5 @@
         - cat output.json
   artifacts:
     files:
+      - ls -ltr
       - 'output.json'
