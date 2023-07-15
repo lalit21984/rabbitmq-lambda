@@ -2081,12 +2081,13 @@ Resources:
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
             Principal: 
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/cloudformationservicerole
             Action:
             - kms:CreateGrant
             - kms:ListGrants
             - kms:RetireGrant
             - kms:RevokeGrant
+            - kms:*
             Resource: '*'
             Condition:
               Bool:
@@ -2249,6 +2250,7 @@ Resources:
             - kms:ListGrants
             - kms:RetireGrant
             - kms:RevokeGrant
+            - kms:*
             Resource: '*'
             Condition:
               Bool:
