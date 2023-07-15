@@ -26,6 +26,7 @@
 
         #- echo "{\"oObjectVersionR1\":"$objVersionr1",\"oObjectVersionR2\":"$objVersionr2"}" | jq . > output.json
         - echo "{\"oObjectVersionR1\":"$objVersionr1"}" | jq . > output.json
+        - ls -ltr
         - cat output.json
   artifacts:
     files:

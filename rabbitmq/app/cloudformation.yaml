@@ -2048,7 +2048,8 @@ Resources:
         Statement:
           - Sid: Enable IAM and allow interactive (human) role(s) key use permissions
             Effect: Allow
-            Principal: '*'
+            Principal: 
+              - AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action:
             - kms:Encrypt
             - kms:Decrypt
@@ -2079,7 +2080,8 @@ Resources:
                   - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/*
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
-            Principal: '*'
+            Principal: 
+              - AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action:
             - kms:CreateGrant
             - kms:ListGrants
@@ -2208,7 +2210,8 @@ Resources:
         Statement:
           - Sid: Enable IAM and allow interactive (human) role(s) key use permissions
             Effect: Allow
-            Principal: '*'
+            Principal: 
+              - AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action:
             - kms:Encrypt
             - kms:Decrypt
@@ -2239,7 +2242,8 @@ Resources:
                   - Fn::Sub: arn:aws:iam::${AWS::AccountId}:role/*
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
-            Principal: '*'
+            Principal: 
+              - AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action:
             - kms:CreateGrant
             - kms:ListGrants
