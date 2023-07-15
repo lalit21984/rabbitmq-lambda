@@ -2211,7 +2211,7 @@ Resources:
           - Sid: Enable IAM and allow interactive (human) role(s) key use permissions
             Effect: Allow
             Principal: 
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/cloudformationservicerole
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
             Action:
             - kms:Encrypt
             - kms:Decrypt
@@ -2243,7 +2243,7 @@ Resources:
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
             Principal: 
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/cloudformationservicerole
             Action:
             - kms:CreateGrant
             - kms:ListGrants
