@@ -1,0 +1,9 @@
+LICENSE
+README.md
+setup.py
+cfnresponse/__init__.py
+cfnresponse.egg-info/PKG-INFO
+cfnresponse.egg-info/SOURCES.txt
+cfnresponse.egg-info/dependency_links.txt
+cfnresponse.egg-info/requires.txt
+cfnresponse.egg-info/top_level.txt
