@@ -9,7 +9,7 @@
     build:
       commands:
         - echo $(pwd)
-        - cd rabbitmq/RabbitLambda
+        - cd RabbitLambda
         - zip -r RabbitLambda.zip *
         - ls -ltr
         - pwd
@@ -33,4 +33,4 @@
         - cat output.json
   artifacts:
     files:
-      - rabbitmq/output.json
+      - output.json
