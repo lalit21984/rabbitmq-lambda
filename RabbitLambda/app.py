@@ -17,7 +17,8 @@ def handler(event, context):
     try:
       # Grab config file and env variables
 
-      config_path = os.environ['LAMBDA_TASK_ROOT'] + "/rabbit_config_" + os.environ['ENVIRONMENT'] + ".json"
+      #config_path = os.environ['LAMBDA_TASK_ROOT'] + "/rabbit_config_" + os.environ['ENVIRONMENT'] + ".json"
+      config_path = os.environ['LAMBDA_TASK_ROOT'] + "/rabbit_config_dev" + ".json"
       json_config = json.loads(open(config_path).read())
       secret_arn = os.environ['SECRET_ARN']
       rabbit_endpoint = os.environ['RABBIT_ENDPOINT']

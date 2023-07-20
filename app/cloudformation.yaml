@@ -2584,7 +2584,7 @@ Resources:
         Variables:
           SECRET_ARN: !Ref rRabbitPasswordSecret
           RABBIT_ENDPOINT: !Sub ${rRabbitBroker}.mq.${AWS::Region}.amazonaws.com
-          ENVIRONMENT: !Ref pEnvironment
+          ENVIRONMENT: dev
       PackageType: Zip
       VpcConfig:
         SecurityGroupIds:
@@ -2610,7 +2610,7 @@ Resources:
     Type: AWS::CloudFormation::CustomResource
     Properties:
       ServiceToken: !GetAtt rRabbitConfigureFunction.Arn
-      Version: 2 # Increment this when you need the code to be run again
+      Version: 1 # Increment this when you need the code to be run again
 
   rRabbitConfigureRole:
     Type: AWS::IAM::Role
