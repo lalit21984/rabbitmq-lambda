@@ -2625,8 +2625,8 @@ Resources:
             Principal:
               Service:
                 - lambda.amazonaws.com
-      # ManagedPolicyArns:
-      #   - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       # PermissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy/team-fed-svcrole-boundary
       Policies:
         - PolicyName: secretsmanager
