@@ -17,8 +17,7 @@
         - ls -ltr
         
         - aws s3 cp RabbitLambda.zip s3://$CODE_BUCKET_R1/$BUCKET_PREFIX/RabbitLambda.zip
-        #- objVersionr1=$(aws s3api list-object-versions --bucket $CODE_BUCKET_R1 --prefix $BUCKET_PREFIX/RabbitLambda.zip | jq ".Versions[0].VersionId")
-        - objVersionr1=1
+        - objVersionr1=$(aws s3api list-object-versions --bucket $CODE_BUCKET_R1 --prefix $BUCKET_PREFIX/RabbitLambda.zip | jq ".Versions[0].VersionId")
         - echo "Uploaded Zipped Code to Lambda Bucket - $CODE_BUCKET_R1"
 
         # - aws s3 cp RabbitLambda.zip s3://$CODE_BUCKET_R2/$BUCKET_PREFIX/RabbitLambda.zip --sse aws:kms --sse-kms-key-id $KMS_ARN_R2 --region us-west-2
