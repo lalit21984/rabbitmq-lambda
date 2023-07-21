@@ -2593,7 +2593,7 @@ Resources:
           - !Ref pAppSubnet1
       Handler: app.handler
       Role: !GetAtt rRabbitConfigureRole.Arn
-      Runtime: python3.7
+      Runtime: python3.11
       Tags:
         Name: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
         team:lifecycle : !Ref pEnvironment
