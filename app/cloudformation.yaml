@@ -2416,6 +2416,14 @@ Resources:
           FromPort: -1
           ToPort: -1
           CidrIp: 127.0.0.1/32
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
       SecurityGroupIngress:
         - IpProtocol: tcp
           CidrIp: !Ref pAppSubnetCIDR1
@@ -2539,13 +2547,15 @@ Resources:
         TimeZone: America/Chicago
       PubliclyAccessible: false
       SecurityGroups: [!Ref rRabbitMQClusterSecurityGroup]
-      SubnetIds: !If
-                    - cIsProd
-                    - [!Ref pAppSubnet1, !Ref pAppSubnet2, !Ref pAppSubnet3]
-                    - !If
-                      - cIsPreProd
-                      - [!Ref pAppSubnet1, !Ref pAppSubnet2, !Ref pAppSubnet3]
-                      - [!Ref pAppSubnet1]
+      SubnetIds: 
+        - !Ref pAppSubnet1
+                  #!If
+                    #- cIsProd
+                    # - [!Ref pAppSubnet1, !Ref pAppSubnet2, !Ref pAppSubnet3]
+                    # - !If
+                    #   - cIsPreProd
+                    #   - [!Ref pAppSubnet1, !Ref pAppSubnet2, !Ref pAppSubnet3]
+                    #   - [!Ref pAppSubnet1]
       Users: 
         - 
           Password: !Sub '{{resolve:secretsmanager:${rRabbitPasswordSecret}:SecretString}}'
