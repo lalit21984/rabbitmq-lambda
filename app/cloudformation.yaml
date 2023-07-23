@@ -2586,39 +2586,39 @@ Resources:
         - Key: team:team-owner
           Value: !Ref pTagteamTeamOwner
     
-  # rRabbitConfigureFunction:
-  #   Condition: cIsMainRegion
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     FunctionName: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
-  #     CodeUri:
-  #       Bucket: !Ref pLambdaCodeBucket
-  #       Key: my-app/RabbitLambda.zip
-  #       Version: !Ref pObjectVersion
-  #     Environment:
-  #       Variables:
-  #         SECRET_ARN: !Ref rRabbitPasswordSecret
-  #         RABBIT_ENDPOINT: !Sub ${rRabbitBroker}.mq.${AWS::Region}.amazonaws.com
-  #         ENVIRONMENT: dev
-  #     PackageType: Zip
-  #     VpcConfig:
-  #       SecurityGroupIds:
-  #         - !Ref rRabbitMQClusterSecurityGroup
-  #       SubnetIds:
-  #         - !Ref pAppSubnet1
-  #     Handler: app.handler
-  #     Role: !GetAtt rRabbitConfigureRole.Arn
-  #     Runtime: python3.7
-  #     Tags:
-  #       Name: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
-  #       team:lifecycle : !Ref pEnvironment
-  #       team:vsad : !Ref pVsadTag
-  #       team:vast-id : !Ref pVastTag
-  #       team:purpose: Lambda function to configure RabbitMQ Cluster
-  #       team:dataclass: !Ref pTagteamDataclass
-  #       team:launched-by: !Ref pTagteamLaunchedBy
-  #       team:resource-custodian: !Ref pTagteamResourceCustodian
-  #       team:team-owner: !Ref pTagteamTeamOwner
+  rRabbitConfigureFunction:
+    Condition: cIsMainRegion
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
+      CodeUri:
+        Bucket: !Ref pLambdaCodeBucket
+        Key: my-app/RabbitLambda.zip
+        Version: !Ref pObjectVersion
+      Environment:
+        Variables:
+          SECRET_ARN: !Ref rRabbitPasswordSecret
+          RABBIT_ENDPOINT: !Sub ${rRabbitBroker}.mq.${AWS::Region}.amazonaws.com
+          ENVIRONMENT: dev
+      PackageType: Zip
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref rRabbitMQClusterSecurityGroup
+        SubnetIds:
+          - !Ref pAppSubnet1
+      Handler: app.handler
+      Role: !GetAtt rRabbitConfigureRole.Arn
+      Runtime: python3.7
+      Tags:
+        Name: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
+        team:lifecycle : !Ref pEnvironment
+        team:vsad : !Ref pVsadTag
+        team:vast-id : !Ref pVastTag
+        team:purpose: Lambda function to configure RabbitMQ Cluster
+        team:dataclass: !Ref pTagteamDataclass
+        team:launched-by: !Ref pTagteamLaunchedBy
+        team:resource-custodian: !Ref pTagteamResourceCustodian
+        team:team-owner: !Ref pTagteamTeamOwner
   
   # rRabbitConfigureCustomResource:
   #   Condition: cIsMainRegion
