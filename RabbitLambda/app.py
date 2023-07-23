@@ -21,7 +21,7 @@ def handler(event, context):
       json_config = json.loads(open(config_path).read())
       secret_arn = os.environ['SECRET_ARN']
       rabbit_endpoint = os.environ['RABBIT_ENDPOINT']
-      
+      print ('inside Create-Update loop')
 
       # Get secret from secrets manager
       response = secret_client.get_secret_value(SecretId=secret_arn)
@@ -30,11 +30,13 @@ def handler(event, context):
       requests.post(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
 
       # Report success
+      print ('report success')
       cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
 
     except Exception as e:
       # Log error and report failure
       logging.exception("Failed to configure RabbitMQ")
+      print ('report failed')
       cfnresponse.send(event, context, cfnresponse.FAILED, {})
 
   elif event["RequestType"] == "Delete":
