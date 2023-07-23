@@ -583,37 +583,37 @@ Resources:
 
   rApplicationInstanceASG:
     Type: AWS::AutoScaling::AutoScalingGroup
-    CreationPolicy:
-      ResourceSignal:
-        Count: 
-          !If
-            - cIsMainRegion
-            - !If
-                - cIsDev
-                - 1 #!Ref pDevInstanceCount
-                - 1 #!Ref pInstanceCount
-            - !If
-                - cIsR2andActive
-                - !If
-                    - cIsDev
-                    - 1 #!Ref pDevInstanceCount
-                    - 1 #!Ref pInstanceCount
-                - 0 # First deployment to R2 behavior (starting on or off)
-        Timeout: PT18M
-    UpdatePolicy:
-      AutoScalingRollingUpdate:
-        !If
-          - cIsMainRegion
-          - 
-            PauseTime: PT18M # Region 1 constant behavior
-            WaitOnResourceSignals: true
-          - !If
-              - cIsR2andActive
-              - 
-                PauseTime: PT18M # Region 2 activated/updated behavior
-                WaitOnResourceSignals: true
-              - 
-                !Ref AWS::NoValue # Tear down R2 behavior
+    # CreationPolicy:
+    #   ResourceSignal:
+    #     Count: 
+    #       !If
+    #         - cIsMainRegion
+    #         - !If
+    #             - cIsDev
+    #             - 1 #!Ref pDevInstanceCount
+    #             - 1 #!Ref pInstanceCount
+    #         - !If
+    #             - cIsR2andActive
+    #             - !If
+    #                 - cIsDev
+    #                 - 1 #!Ref pDevInstanceCount
+    #                 - 1 #!Ref pInstanceCount
+    #             - 0 # First deployment to R2 behavior (starting on or off)
+    #     Timeout: PT18M
+    # UpdatePolicy:
+    #   AutoScalingRollingUpdate:
+    #     !If
+    #       - cIsMainRegion
+    #       - 
+    #         PauseTime: PT18M # Region 1 constant behavior
+    #         WaitOnResourceSignals: true
+    #       - !If
+    #           - cIsR2andActive
+    #           - 
+    #             PauseTime: PT18M # Region 2 activated/updated behavior
+    #             WaitOnResourceSignals: true
+    #           - 
+    #             !Ref AWS::NoValue # Tear down R2 behavior
     Properties:
       AutoScalingGroupName: !Sub ${pProduct}-asg-${pEnvironment}-instances-1
       MinSize:
