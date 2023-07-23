@@ -2620,12 +2620,12 @@ Resources:
         team:resource-custodian: !Ref pTagteamResourceCustodian
         team:team-owner: !Ref pTagteamTeamOwner
   
-  # rRabbitConfigureCustomResource:
-  #   Condition: cIsMainRegion
-  #   Type: AWS::CloudFormation::CustomResource
-  #   Properties:
-  #     ServiceToken: !GetAtt rRabbitConfigureFunction.Arn
-  #     Version: 1 # Increment this when you need the code to be run again
+  rRabbitConfigureCustomResource:
+    Condition: cIsMainRegion
+    Type: AWS::CloudFormation::CustomResource
+    Properties:
+      ServiceToken: !GetAtt rRabbitConfigureFunction.Arn
+      Version: 1 # Increment this when you need the code to be run again
 
   rRabbitConfigureRole:
     Type: AWS::IAM::Role
