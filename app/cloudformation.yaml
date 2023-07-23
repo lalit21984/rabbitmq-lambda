@@ -726,7 +726,7 @@ Resources:
               VolumeType: sc1
         IamInstanceProfile:
           Name: !Ref rApplicationInstanceProfile
-        ImageId: ami-00abfd8da690f984d
+        ImageId: ami-026c9a2324f95056d #ami-00abfd8da690f984d
         InstanceType: !Ref pInstanceType #c5a.large
         MetadataOptions:
           HttpEndpoint: enabled
