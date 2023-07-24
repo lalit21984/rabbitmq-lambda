@@ -24,17 +24,17 @@ def handler(event, context):
       print ('inside Create-Update loop')
 
       # Get secret from secrets manager
-      response = secret_client.get_secret_value(SecretId=secret_arn)
+      #response = secret_client.get_secret_value(SecretId=secret_arn)
       print ('secret retrival success')
       # Send config file to RabbitMQ api
-      requests.post(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
+      #requests.post(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
 
       # Report success
       print ('post rabbitmq config command')
       cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
       print ('post cfnresponse command ')
     except Exception as e:
-      response.error(str(e))
+      #response.error(str(e))
       # Log error and report failure
       logging.exception("Failed to configure RabbitMQ")
       print ('report failed')
