@@ -1,0 +1,17 @@
+- hosts: localhost
+gather_facts: False
+vars_files:
+- hosts_var
+
+tasks:
+- name: List exchanges
+command: rabbitmqadmin --host {{ RABBITMQ_HOST }} --port 443 --ssl --vhost {{ RABBITMQ_VHOST }} --username {{ RABBITMQ_USERNAME }} --password {{ RABBITMQ_PASSWORD }} list exchanges
+
+- name: List queues
+command: rabbitmqadmin --host {{ RABBITMQ_HOST }} --port 443 --ssl --vhost {{ RABBITMQ_VHOST }} --username {{ RABBITMQ_USERNAME }} --password {{ RABBITMQ_PASSWORD }} list queues
+
+- name: Import configurations
+command: rabbitmqadmin --host {{ RABBITMQ_HOST }} --port 443 --ssl --vhost {{ RABBITMQ_VHOST }} --username {{ RABBITMQ_USERNAME }} --password {{ RABBITMQ_PASSWORD }} import rabbitconfig.json
+
+- name: List queues post import of configurations
+      command: rabbitmqadmin --host {{ RABBITMQ_HOST }} --port 443 --ssl --vhost {{ RABBITMQ_VHOST }} --username {{ RABBITMQ_USERNAME }} --password {{ RABBITMQ_PASSWORD }} list queues

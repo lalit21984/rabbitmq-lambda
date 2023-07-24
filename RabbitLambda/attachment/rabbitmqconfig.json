@@ -1,0 +1,124 @@
+{
+   "rabbit_version":"3.8.6",
+   "rabbitmq_version":"3.8.6",
+   "product_name":"RabbitMQ",
+   "product_version":"3.8.6",
+   "users":[
+      {
+         "name":"REPLACE_WITH_YOUR_ADMIN_USERNAME",
+         "password_hash":"REPLACE_WITH_YOUR_HASH",
+         "hashing_algorithm":"rabbit_password_hashing_sha256",
+         "tags":"administrator"
+      },
+      {
+         "name":"monitoring-AWS-OWNED-DO-NOT-DELETE",
+         "password_hash":"REPLACE_WITH_YOUR_HASH",
+         "hashing_algorithm":"rabbit_password_hashing_sha256",
+         "tags":"monitoring"
+      }
+   ],
+   "vhosts":[
+      {
+         "name":"/"
+      }
+   ],
+   "permissions":[
+      {
+         "user":"REPLACE_WITH_YOUR_ADMIN_USERNAME",
+         "vhost":"/",
+         "configure":".*",
+         "write":".*",
+         "read":".*"
+      },
+      {
+         "user":"monitoring-AWS-OWNED-DO-NOT-DELETE",
+         "vhost":"/",
+         "configure":"",
+         "write":"",
+         "read":".*"
+      }
+   ],
+   "topic_permissions":[
+      
+   ],
+   "parameters":[
+      
+   ],
+   "global_parameters":[
+      {
+         "name":"cluster_name",
+         "value":"REPLACE_WITH_YOUR_CLUSTERNAME"
+      },
+      {
+         "name":"internal_cluster_id",
+         "value":"REPLACE_WITH_YOUR_CLUSTERID"
+      }
+   ],
+   "policies":[
+      
+   ],
+   "queues":[
+      {
+         "name":"sample-queue1",
+         "vhost":"/",
+         "durable":true,
+         "auto_delete":false,
+         "arguments":{
+            
+         }
+      },
+      {
+         "name":"sample-queue2",
+         "vhost":"/",
+         "durable":true,
+         "auto_delete":false,
+         "arguments":{
+            
+         }
+      }
+   ],
+   "exchanges":[
+      {
+         "name":"sample-exchange1",
+         "vhost":"/",
+         "type":"topic",
+         "durable":true,
+         "auto_delete":false,
+         "internal":false,
+         "arguments":{
+            
+         }
+      },
+      {
+         "name":"sample-exchange2",
+         "vhost":"/",
+         "type":"direct",
+         "durable":true,
+         "auto_delete":false,
+         "internal":false,
+         "arguments":{
+            
+         }
+      }
+   ],
+   "bindings":[
+      {
+         "source":"sample-exchange1",
+         "vhost":"/",
+         "destination":"sample-queue1",
+         "destination_type":"queue",
+         "arguments":{
+            
+         }
+      },
+      {
+         "source":"sample-exchange2",
+         "vhost":"/",
+         "destination":"sample-queue2",
+         "destination_type":"queue",
+         "arguments":{
+            
+         }
+      }
+   ]
+}

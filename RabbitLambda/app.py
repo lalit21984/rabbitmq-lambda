@@ -29,7 +29,7 @@ def handler(event, context):
       # Send config file to RabbitMQ api
       requests.post(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
       print ('Print updated RabbitMQ Definitions')
-      requests.post(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
+      requests.get(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
 
       # Report success
       cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
