@@ -231,7 +231,7 @@ Resources:
                   #- !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-aurora-postgresql/aurora/*
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ab-app-app-secret-${pEnvironment}-rabbituser*
                   #- !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${pProduct}-secret-${pEnvironment}-iotOracledbPassword*
-                - Sid: allowkmsforsecrets
+              - Sid: allowkmsforsecrets
                 Effect: Allow
                 Action:
                   - kms:DescribeKey
