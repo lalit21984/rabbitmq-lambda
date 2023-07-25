@@ -21,11 +21,10 @@ def handler(event, context):
       json_config = json.loads(open(config_path).read())
       secret_arn = os.environ['SECRET_ARN']
       rabbit_endpoint = os.environ['RABBIT_ENDPOINT']
-      print ('inside Create-Update loop')
+      print ('Environment Variables Created')
 
       # Get secret from secrets manager
       response = secret_client.get_secret_value(SecretId=secret_arn)
-      print('secret it:')
       print (response)
       # Send config file to RabbitMQ api
       url = "https://" + rabbit_endpoint + "/api/definitions"
@@ -37,7 +36,7 @@ def handler(event, context):
       print (export_def.text)
       # Report success
       cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
-      print ('post cfnresponse command ')
+      print ('cfnresponse Success')
     except Exception as e:
       response.error(str(e))
       # Log error and report failure
