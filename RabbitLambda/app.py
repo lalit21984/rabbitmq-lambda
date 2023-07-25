@@ -25,12 +25,16 @@ def handler(event, context):
 
       # Get secret from secrets manager
       response = secret_client.get_secret_value(SecretId=secret_arn)
-      print ('secret retrival success')
+      print('secret it:')
+      print (response)
       # Send config file to RabbitMQ api
-      requests.post(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
-      print ('Print updated RabbitMQ Definitions')
-      requests.get(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
-
+      url = "https://" + rabbit_endpoint + "/api/definitions"
+      import_def = requests.post(url, json=json_config, auth=('rabbit-admin', response['SecretString']))
+      print ('Import commond output:')
+      print (import_def.text)
+      export_def = requests.get(url="https://" + rabbit_endpoint + "/api/definitions", json=json_config, auth=('rabbit-admin', response['SecretString']))
+      print ('Export commond output:')
+      print (export_def.text)
       # Report success
       cfnresponse.send(event, context, cfnresponse.SUCCESS, {})
       print ('post cfnresponse command ')
