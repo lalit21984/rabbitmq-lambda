@@ -3,7 +3,6 @@
     install:
       runtime-versions:
           python: 3.9
-    install:
       commands:
         - apt-get install -y jq
     build:
@@ -22,11 +21,7 @@
         - objVersionr1=$(aws s3api list-object-versions --bucket $CODE_BUCKET_R1 --prefix $BUCKET_PREFIX/RabbitLambda.zip | jq ".Versions[0].VersionId")
         - echo "Uploaded Zipped Code to Lambda Bucket - $CODE_BUCKET_R1"
 
-        # - aws s3 cp RabbitLambda.zip s3://$CODE_BUCKET_R2/$BUCKET_PREFIX/RabbitLambda.zip --sse aws:kms --sse-kms-key-id $KMS_ARN_R2 --region us-west-2
-        # - objVersionr2=$(aws s3api list-object-versions --bucket $CODE_BUCKET_R2 --prefix $BUCKET_PREFIX/RabbitLambda.zip | jq ".Versions[0].VersionId")
-        # - echo "Uploaded Zipped Code to Lambda Bucket - $CODE_BUCKET_R2"
-
-        #- echo "{\"oObjectVersionR1\":"$objVersionr1",\"oObjectVersionR2\":"$objVersionr2"}" | jq . > output.json
+        # What is this section for??
         - echo "{\"oObjectVersionR1\":"$objVersionr1"}" | jq . > output.json
         - ls -ltr
         - pwd

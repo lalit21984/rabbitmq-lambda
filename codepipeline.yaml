@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Builds a CI/CD Pipeline to deploy a configurable CloudFormation or SAM Stack.
-## code pipeline for SLS
+Description: Builds a CI/CD Pipeline to deploy a configurable RabbitMQ (Across Multiple Accounts)
+
 Parameters:
 # Product Parameters
   pProduct:
