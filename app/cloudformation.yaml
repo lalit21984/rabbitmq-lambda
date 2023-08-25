@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: Template for RabbitMQ with AutoImport
-Transform: 'AWS::Serverless-2016-10-31' # Remove if not using a serverless function
+Transform: 'AWS::Serverless-2016-10-31'
 
 Parameters:
   pProduct:
@@ -16,7 +16,7 @@ Parameters:
   pVPCId:
     Description: VPC ID
     Type: String
-    Default: 'vpc-098f2593862b9767b'
+    Default: 'vpc-0558302bd00b82413'
   # pAppSubnets:
   #   Description: An Array of the App Subnet IDs
   #   Type: List<AWS::EC2::Subnet::Id>
@@ -24,7 +24,7 @@ Parameters:
   pAppSubnetCIDR1:
     Description: An Array of the Intranet Subnet IDs
     Type: String
-    Default: '10.0.1.0/24'
+    Default: '10.0.128.0/20'
   # pAppSubnetCIDR2:
   #   Description: An Array of the Intranet Subnet IDs
   #   Type: String
@@ -44,7 +44,7 @@ Parameters:
   pLambdaCodeBucket:
     Type: String
     Description: S3 Bucket that contains the Lambda Code for RabbitMQ
-    Default: "cf-templates-s3uaul2id9rr-us-east-1"
+    # Default: "cf-templates-s3uaul2id9rr-us-east-1"
   pObjectVersion:
     Type: String
     Description: S3 Version of the Lambda Code to use
