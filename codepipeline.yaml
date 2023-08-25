@@ -2,37 +2,28 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Builds a CI/CD Pipeline to deploy a configurable RabbitMQ (Across Multiple Accounts)
 
 Parameters:
-# Product Parameters
   pName:
     Type: String
     Default: "AutoRabbit"
-  pTeam:
+  pType:
     Type: String
     Description: Team Name
     Default: "Beta"
-
-### Pipeline Configuration: 
-
   pBranchName:
     Type: String
     Description: Branch Name to Deploy
     Default: main
-
-# Template Path: 
   pTemplatePath: 
     Type: String
-    Default: 'app/cloudformation.yml'
+    Default: 'app/cloudformation.yaml'
     Description: Path to the template to deploy from the source or build artifact
- 
-# Optional Configuration File for Dev
   pConfigurationPathDev: 
     Type: String
     Default: 'app/configuration-dev.json'
     Description: (Optional) CloudFormation Configuration file for Dev
-  
-  pDevAccountNumber:
-    Type: String
-    Default: '707017293678'
+  # pDevAccountNumber:
+  #   Type: String
+  #   Default: '707017293678'
   pRegion1Name:
     Type: String
     Default: 'us-east-1'
@@ -64,6 +55,8 @@ Resources:
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
+      VersioningConfiguration:
+        Status: Enabled
       BucketEncryption:
         ServerSideEncryptionConfiguration:
         - ServerSideEncryptionByDefault:
@@ -102,7 +95,7 @@ Resources:
       #   - Name: DefaultTrigger
       #     Branches:
       #     - development
-      #     DestinationArn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${pName}-${pTeam}-${pBranchName}
+      #     DestinationArn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${pName}-${pType}-${pBranchName}
       #     Events:
       #     - all
 
@@ -132,9 +125,7 @@ Resources:
       TimeoutInMinutes: 10
       # EncryptionKey: !Ref rS3KMSKey
       ResourceAccessRole: !Ref rCodePipelineRole
-  # --------------
-  # CodePipeline
-  # --------------
+  
   rCodePipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -147,7 +138,7 @@ Resources:
               Type: KMS
             Location: !Ref rS3RabbitStorageBucket
             Type: S3
-      Name: !Sub ${pName}-${pTeam}-${pBranchName}
+      Name: !Sub ${pName}-${pType}-${pBranchName}
       RoleArn: !Sub ${rCodePipelineRole.Arn}
       Stages:
         - Name: Source
@@ -180,7 +171,7 @@ Resources:
               OutputArtifacts:
                 - Name: Build-LambdaCode
               RunOrder: 1
-        - Name: !Sub ${pTeam}-Dev
+        - Name: !Sub ${pType}-Dev
           Actions:
             - Name: !Sub Deploy_Dev-${pRegion1Name}
               ActionTypeId:
@@ -191,22 +182,22 @@ Resources:
               Configuration:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-                RoleArn: !Sub arn:aws:iam::${pDevAccountNumber}:role/${rCodePipelineRole}
-                StackName: !Sub ${pName}-${pTeam}
+                RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${rCodePipelineRole}
+                StackName: !Sub ${pName}-${pType}
                 ParameterOverrides: !Sub |
                   {
-                    "pLambdaCodeBucket": "${rS3RabbitStorageBucket}",
-                    "pObjectVersion": {"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]}
+                    "pLambdaCodeBucket":"${rS3RabbitStorageBucket}",
+                    "pObjectVersion":{"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]}
                   }
                 TemplatePath: !Sub Source::${pTemplatePath}
                 TemplateConfiguration: !Sub Source::${pConfigurationPathDev}
-                OutputFileName: Outputs-Dev-R1.json
+                OutputFileName: Outputs-Dev.json
               InputArtifacts:
                 - Name: Source
                 - Name: Build-LambdaCode
               OutputArtifacts:
-                - Name: Outputs-Dev-R1
-              RoleArn: !Sub arn:aws:iam::${pDevAccountNumber}:role/${rCodePipelineRole}
+                - Name: Outputs-Dev
+              RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/${rCodePipelineRole}
               Region: !Ref pRegion1Name
               RunOrder: 1
 
@@ -229,7 +220,7 @@ Resources:
   #           - branch
   #         referenceName:
   #           - !Ref pBranchName
-  #     Name: !Sub ${pName}-${pTeam}-f-${pBranchName}
+  #     Name: !Sub ${pName}-${pType}-f-${pBranchName}
   #     State: "ENABLED"
   #     Targets:
   #       - RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/CodePipeline-Service
