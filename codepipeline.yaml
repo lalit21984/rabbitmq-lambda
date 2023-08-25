@@ -3,14 +3,13 @@ Description: Builds a CI/CD Pipeline to deploy a configurable RabbitMQ (Across M
 
 Parameters:
 # Product Parameters
-  pProduct:
+  pName:
     Type: String
-    Description: Product Name
-    Default: ""
+    Default: "AutoRabbit"
   pTeam:
     Type: String
     Description: Team Name
-    Default: "teamA"
+    Default: "Beta"
 
 ### Pipeline Configuration: 
 
@@ -28,7 +27,7 @@ Parameters:
 # Optional Configuration File for Dev
   pConfigurationPathDev: 
     Type: String
-    Default: 'app/config/configuration-dev.json'
+    Default: 'app/configuration-dev.json'
     Description: (Optional) CloudFormation Configuration file for Dev
   
   pDevAccountNumber:
@@ -103,36 +102,14 @@ Resources:
       #   - Name: DefaultTrigger
       #     Branches:
       #     - development
-      #     DestinationArn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${pProduct}-${pTeam}-${pBranchName}
+      #     DestinationArn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${pName}-${pTeam}-${pBranchName}
       #     Events:
       #     - all
-
-  # ------------
-  # CodeBuild
-  # ------------
-  # rScanCodeBuildProject:
-  #   Type: AWS::CodeBuild::Project
-  #   Properties:
-  #     Name: !Sub ${pProduct}-template-scan-${pBranchName}
-  #     Description: CodeBuild Stage to Scan Created Templates
-  #     ServiceRole: !Ref pCodeBuildRole
-  #     Artifacts:
-  #         Type: CODEPIPELINE
-  #     Environment:
-  #         Type: LINUX_CONTAINER
-  #         ComputeType: BUILD_GENERAL1_SMALL
-  #         Image: aws/codebuild/standard:5.0
-  #         PrivilegedMode: true  
-  #     Source:
-  #       Type: CODEPIPELINE
-  #       BuildSpec: 'cicd/scan_buildspec.yml'
-  #     TimeoutInMinutes: 10
-  #     # EncryptionKey: !Ref rS3KMSKey
 
   rCodeBuildLambdaCodeProject:
     Type: AWS::CodeBuild::Project
     Properties:
-      Name: !Sub ${pProduct}-build-LambdaCode-${pBranchName}
+      Name: !Sub ${pName}-build-LambdaCode-${pBranchName}
       Description: This project will be used for Deploying the Lambda Code for RabbitMQ
       ServiceRole: !Ref rCodePipelineRole
       Artifacts:
@@ -146,12 +123,12 @@ Resources:
           - Name: CODE_BUCKET_R1
             Value: !Ref rS3RabbitStorageBucket
           - Name: BUCKET_PREFIX
-            Value: !Ref pProduct
+            Value: !Ref pName
           - Name: KMS_ARN_R1
             Value: !Ref rS3KMSKey
       Source:
         Type: CODEPIPELINE
-        BuildSpec: cicd/lambdabuildspec.yml
+        BuildSpec: lambdabuildspec.yaml
       TimeoutInMinutes: 10
       # EncryptionKey: !Ref rS3KMSKey
       ResourceAccessRole: !Ref rCodePipelineRole
@@ -170,7 +147,7 @@ Resources:
               Type: KMS
             Location: !Ref rS3RabbitStorageBucket
             Type: S3
-      Name: !Sub ${pProduct}-${pTeam}-${pBranchName}
+      Name: !Sub ${pName}-${pTeam}-${pBranchName}
       RoleArn: !Sub ${rCodePipelineRole.Arn}
       Stages:
         - Name: Source
@@ -202,21 +179,7 @@ Resources:
                 - Name: Source
               OutputArtifacts:
                 - Name: Build-LambdaCode
-              RunOrder: 2
-            
-            # - Name: Scan_CodeBuild_Project
-            #   ActionTypeId:
-            #     Category: Build
-            #     Owner: AWS
-            #     Provider: CodeBuild
-            #     Version: "1"
-            #   Configuration:
-            #     ProjectName: !Ref rScanCodeBuildProject
-            #   InputArtifacts:
-            #     - Name: Source
-            #   OutputArtifacts:
-            #     - Name: Scan-Build
-            #   RunOrder: 1
+              RunOrder: 1
         - Name: !Sub ${pTeam}-Dev
           Actions:
             - Name: !Sub Deploy_Dev-${pRegion1Name}
@@ -229,7 +192,7 @@ Resources:
                 ActionMode: CREATE_UPDATE
                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
                 RoleArn: !Sub arn:aws:iam::${pDevAccountNumber}:role/${rCodePipelineRole}
-                StackName: !Sub ${pProduct}-${pTeam}
+                StackName: !Sub ${pName}-${pTeam}
                 ParameterOverrides: !Sub |
                   {
                     "pLambdaCodeBucket": "${rS3RabbitStorageBucket}",
@@ -260,15 +223,15 @@ Resources:
   #       detail-type:
   #         - "CodeCommit Repository State Change"
   #       resources:
-  #         - !Sub arn:aws:codecommit:${pRegion1Name}:${AWS::AccountId}:${pProduct}
+  #         - !Sub arn:aws:codecommit:${pRegion1Name}:${AWS::AccountId}:${pName}
   #       detail:
   #         referenceType:
   #           - branch
   #         referenceName:
   #           - !Ref pBranchName
-  #     Name: !Sub ${pProduct}-${pTeam}-f-${pBranchName}
+  #     Name: !Sub ${pName}-${pTeam}-f-${pBranchName}
   #     State: "ENABLED"
   #     Targets:
   #       - RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/CodePipeline-Service
   #         Arn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${rCodePipeline}
-  #         Id: !Sub "${pProduct}_Initial_CodePipeline_V1"   
+  #         Id: !Sub "${pName}_Initial_CodePipeline_V1"   

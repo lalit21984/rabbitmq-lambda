@@ -3,10 +3,10 @@ Description: Template for RabbitMQ with AutoImport
 Transform: 'AWS::Serverless-2016-10-31'
 
 Parameters:
-  pProduct:
-    Description: Name of the instance
+  pName:
+    Description: Name of the project
     Type: String
-    Default: 'is'
+    Default: AutoRabbit
   pEnvironment:
     Description: Environment Name
     Type: String
@@ -44,7 +44,6 @@ Parameters:
   pLambdaCodeBucket:
     Type: String
     Description: S3 Bucket that contains the Lambda Code for RabbitMQ
-    # Default: "cf-templates-s3uaul2id9rr-us-east-1"
   pObjectVersion:
     Type: String
     Description: S3 Version of the Lambda Code to use
@@ -72,7 +71,7 @@ Resources:
   rApplicationInstanceRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${pProduct}-role-${pEnvironment}-instance-${AWS::Region}
+      RoleName: !Sub ${pName}-role-${pEnvironment}-instance-${AWS::Region}
       AssumeRolePolicyDocument:
         Statement:
           - Action: sts:AssumeRole
@@ -106,7 +105,7 @@ Resources:
                 Condition:
                   ForAnyValue:StringLike:
                     kms:ResourceAliases:
-                      - !Sub alias/${pProduct}-rabbit-user-pwd-key
+                      - !Sub alias/${pName}-rabbit-user-pwd-key
               # - Sid: allowkmsfors3
               #   Effect: Allow
               #   Action:
@@ -138,7 +137,7 @@ Resources:
   rApplicationSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub ${pProduct}-secgroup-${pEnvironment}-instances
+      GroupName: !Sub ${pName}-secgroup-${pEnvironment}-instances
       VpcId: !Ref pVPCId
       GroupDescription: Enable Outbound Internet and Console NLB Ingress Access to Application Instances
       SecurityGroupIngress:
@@ -168,7 +167,7 @@ Resources:
   rApplicationInstanceASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      AutoScalingGroupName: !Sub ${pProduct}-asg-${pEnvironment}-instances-1
+      AutoScalingGroupName: !Sub ${pName}-asg-${pEnvironment}-instances-1
       MinSize: !Ref pInstanceCount
       MaxSize: !Ref pInstanceCount
       DesiredCapacity: !Ref pInstanceCount
@@ -188,7 +187,7 @@ Resources:
   rApplicationLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
-      LaunchTemplateName: !Sub ${pProduct}-launchtemp-${pEnvironment}-instances
+      LaunchTemplateName: !Sub ${pName}-launchtemp-${pEnvironment}-instances
       LaunchTemplateData:
         BlockDeviceMappings:
           - DeviceName: /dev/xvda
@@ -222,7 +221,7 @@ Resources:
     UpdateReplacePolicy: Retain
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub alias/${pProduct}-rabbit-pwd-key
+      AliasName: !Sub alias/${pName}-rabbit-pwd-key
       TargetKeyId: !Ref rRabbitPasswordKMSKey
 
   rRabbitPasswordKMSKey:
@@ -299,7 +298,7 @@ Resources:
   rRabbitPasswordSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: !Sub ${pProduct}-secret-${pEnvironment}-rabbitpwd
+      Name: !Sub ${pName}-secret-${pEnvironment}-rabbitpwd
       Description: The password for the rabbit-admin user in RabbitMQ
       KmsKeyId: !Ref rRabbitPasswordKMSKey
       GenerateSecretString:
@@ -311,7 +310,7 @@ Resources:
     UpdateReplacePolicy: Retain
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub alias/${pProduct}-rabbit-user-pwd-key
+      AliasName: !Sub alias/${pName}-rabbit-user-pwd-key
       TargetKeyId: !Ref rRabbitUserPasswordKMSKey
 
   rRabbitUserPasswordKMSKey:
@@ -380,7 +379,7 @@ Resources:
   rRabbituserPasswordSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: !Sub ${pProduct}-secret-${pEnvironment}-rabbituserpwd
+      Name: !Sub ${pName}-secret-${pEnvironment}-rabbituserpwd
       Description: The password for the app-app user in RabbitMQ
       KmsKeyId: !Ref rRabbitUserPasswordKMSKey
       GenerateSecretString:
@@ -390,7 +389,7 @@ Resources:
   rRabbitMQClusterSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub ${pProduct}-secgroup
+      GroupName: !Sub ${pName}-secgroup
       VpcId: !Ref pVPCId
       GroupDescription: Enable RabbitMQ Access within SecGroup
       SecurityGroupEgress:
@@ -435,7 +434,7 @@ Resources:
     Type: AWS::AmazonMQ::Broker
     Properties:
       AutoMinorVersionUpgrade: false
-      BrokerName: !Sub ${pProduct}-mqbroker-${pEnvironment}-rabbitmq-1
+      BrokerName: !Sub ${pName}-mqbroker-${pEnvironment}-rabbitmq-1
       DeploymentMode: SINGLE_INSTANCE # CLUSTER_MULTI_AZ
       EngineType: RABBITMQ
       EngineVersion: 3.9.13
@@ -461,7 +460,7 @@ Resources:
     #Condition: cIsMainRegion
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
+      FunctionName: !Sub ${pName}-lambda-${pEnvironment}-configure-rabbit
       CodeUri:
         Bucket: !Ref pLambdaCodeBucket
         Key: my-app/RabbitLambda.zip
