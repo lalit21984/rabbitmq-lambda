@@ -7,63 +7,52 @@ Parameters:
     Description: Name of the project
     Type: String
     Default: AutoRabbit
+  
+  # Get rid of pEnv
   pEnvironment:
     Description: Environment Name
     Type: String
     Default: 'dev'
 
-  ## App Specific Parameters
+  # Overridden
+  pCodePipelineRoleName:
+    Type: String
   pVPCId:
     Description: VPC ID
     Type: String
-    Default: 'vpc-0558302bd00b82413'
-  # pAppSubnets:
-  #   Description: An Array of the App Subnet IDs
-  #   Type: List<AWS::EC2::Subnet::Id>
-  #   Default: subnet-02ad3496839c3117a #more
   pAppSubnetCIDR1:
     Description: An Array of the Intranet Subnet IDs
     Type: String
-    Default: '10.0.128.0/20'
   # pAppSubnetCIDR2:
   #   Description: An Array of the Intranet Subnet IDs
   #   Type: String
   # pAppSubnetCIDR3:
   #   Description: An Array of the Intranet Subnet IDs
   #   Type: String
+  pAppSubnet1Id:
+    Type: String
+    Description: AppSubnet1 ID
+  # pAppSubnet2Id:
+  #   Type: String
+  #   Description: AppSubnet2 ID
+  # pAppSubnet3Id:
+  #   Type: String
+  #   Description: AppSubnet3 ID
   pInstanceCount:
     Type: String
     Description: Instance Count for EC2 ASG
-    Default: '1'
   pInstanceType:
     Type: String
     Description: Instance size for app
-    Default: c5a.large
-  
-  ## AmazonMQ specific Parameters
   pLambdaCodeBucket:
     Type: String
     Description: S3 Bucket that contains the Lambda Code for RabbitMQ
   pObjectVersion:
     Type: String
     Description: S3 Version of the Lambda Code to use
-    Default: "1"
-  pAppSubnet1: # Duplicate?
-    Type: String
-    Description: AppSubnet1 ID
-    Default: 'subnet-02ad3496839c3117a'
-  # pAppSubnet2:
-  #   Type: String
-  #   Description: AppSubnet2 ID
-  #   Default: 'None'
-  # pAppSubnet3:
-  #   Type: String
-  #   Description: AppSubnet3 ID
-  #   Default: 'None'
   pAdminUsername:
     Description: The admin username for RabbitMQ (Can't contain commas, colons, equals signs, or spaces)
     Type: String
-    Default: rabbit-admin
     MinLength: '12'
 
 Resources:
@@ -71,7 +60,7 @@ Resources:
   rApplicationInstanceRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${pName}-role-${pEnvironment}-instance-${AWS::Region}
+      RoleName: !Sub ${pName}-role-instance-${AWS::Region}
       AssumeRolePolicyDocument:
         Statement:
           - Action: sts:AssumeRole
@@ -93,7 +82,7 @@ Resources:
                 Action:
                   - secretsmanager:GetSecretValue
                 Resource: 
-                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ab-app-app-secret-${pEnvironment}-rabbituser*
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ab-app-app-secret-rabbituser*
               - Sid: allowkmsforsecrets
                 Effect: Allow
                 Action:
@@ -117,8 +106,8 @@ Resources:
               #   Condition:
               #     ForAnyValue:StringLike:
               #       kms:ResourceAliases:
-              #         - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata-${AWS::Region}
-              #         - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata
+              #         - !Sub alias/ab-app2-app-app-alias-userdata-${AWS::Region}
+              #         - !Sub alias/ab-app2-app-app-alias-userdata
               - Sid: allowkmsfordepls3
                 Effect: Allow
                 Action:
@@ -137,7 +126,7 @@ Resources:
   rApplicationSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub ${pName}-secgroup-${pEnvironment}-instances
+      GroupName: !Sub ${pName}-secgroup-instances
       VpcId: !Ref pVPCId
       GroupDescription: Enable Outbound Internet and Console NLB Ingress Access to Application Instances
       SecurityGroupIngress:
@@ -167,7 +156,7 @@ Resources:
   rApplicationInstanceASG:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
-      AutoScalingGroupName: !Sub ${pName}-asg-${pEnvironment}-instances-1
+      AutoScalingGroupName: !Sub ${pName}-asg-instances-1
       MinSize: !Ref pInstanceCount
       MaxSize: !Ref pInstanceCount
       DesiredCapacity: !Ref pInstanceCount
@@ -177,7 +166,7 @@ Resources:
         LaunchTemplateId: !Ref rApplicationLaunchTemplate
         Version: !GetAtt rApplicationLaunchTemplate.LatestVersionNumber
       VPCZoneIdentifier: 
-       - !Ref pAppSubnet1
+       - !Ref pAppSubnet1Id
       MetricsCollection:
         - Granularity: "1Minute"
           Metrics:
@@ -187,7 +176,7 @@ Resources:
   rApplicationLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
-      LaunchTemplateName: !Sub ${pName}-launchtemp-${pEnvironment}-instances
+      LaunchTemplateName: !Sub ${pName}-launchtemp-instances
       LaunchTemplateData:
         BlockDeviceMappings:
           - DeviceName: /dev/xvda
@@ -204,7 +193,7 @@ Resources:
               VolumeType: sc1
         IamInstanceProfile:
           Name: !Ref rApplicationInstanceProfile
-        ImageId: ami-026c9a2324f95056d
+        ImageId: ami-08a52ddb321b32a8c
         InstanceType: !Ref pInstanceType
         MetadataOptions:
           HttpEndpoint: enabled
@@ -272,7 +261,7 @@ Resources:
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
             Principal: 
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/cloudformationservicerole
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/${pCodePipelineRoleName}
             Action:
             - kms:CreateGrant
             - kms:ListGrants
@@ -298,7 +287,7 @@ Resources:
   rRabbitPasswordSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: !Sub ${pName}-secret-${pEnvironment}-rabbitpwd
+      Name: !Sub ${pName}-secret-rabbitpwd
       Description: The password for the rabbit-admin user in RabbitMQ
       KmsKeyId: !Ref rRabbitPasswordKMSKey
       GenerateSecretString:
@@ -361,7 +350,7 @@ Resources:
           - Sid: Allow service (non-human) role(s) grant operations on CMK
             Effect: Allow
             Principal: 
-              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/cloudformationservicerole
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:role/${pCodePipelineRoleName}
             Action:
             - kms:CreateGrant
             - kms:ListGrants
@@ -379,7 +368,7 @@ Resources:
   rRabbituserPasswordSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: !Sub ${pName}-secret-${pEnvironment}-rabbituserpwd
+      Name: !Sub ${pName}-secret-rabbituserpwd
       Description: The password for the app-app user in RabbitMQ
       KmsKeyId: !Ref rRabbitUserPasswordKMSKey
       GenerateSecretString:
@@ -434,7 +423,7 @@ Resources:
     Type: AWS::AmazonMQ::Broker
     Properties:
       AutoMinorVersionUpgrade: false
-      BrokerName: !Sub ${pName}-mqbroker-${pEnvironment}-rabbitmq-1
+      BrokerName: !Sub ${pName}-mqbroker-rabbitmq-1
       DeploymentMode: SINGLE_INSTANCE # CLUSTER_MULTI_AZ
       EngineType: RABBITMQ
       EngineVersion: 3.9.13
@@ -448,9 +437,9 @@ Resources:
       PubliclyAccessible: false
       SecurityGroups: [!Ref rRabbitMQClusterSecurityGroup]
       SubnetIds: 
-        - !Ref pAppSubnet1
-        # - !Ref pAppSubnet2
-        # - !Ref pAppSubnet3
+        - !Ref pAppSubnet1Id
+        # - !Ref pAppSubnet2Id
+        # - !Ref pAppSubnet3Id
       Users: 
         - 
           Password: !Sub '{{resolve:secretsmanager:${rRabbitPasswordSecret}:SecretString}}'
@@ -460,7 +449,7 @@ Resources:
     #Condition: cIsMainRegion
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${pName}-lambda-${pEnvironment}-configure-rabbit
+      FunctionName: !Sub ${pName}-lambda-configure-rabbit
       CodeUri:
         Bucket: !Ref pLambdaCodeBucket
         Key: my-app/RabbitLambda.zip
@@ -475,7 +464,7 @@ Resources:
         SecurityGroupIds:
           - !Ref rRabbitMQClusterSecurityGroup
         SubnetIds:
-          - !Ref pAppSubnet1
+          - !Ref pAppSubnet1Id
       Handler: app.handler
       Role: !GetAtt rRabbitConfigureRole.Arn
       Runtime: python3.9

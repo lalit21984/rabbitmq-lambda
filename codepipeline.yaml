@@ -21,12 +21,55 @@ Parameters:
     Type: String
     Default: 'app/configuration-dev.json'
     Description: (Optional) CloudFormation Configuration file for Dev
-  # pDevAccountNumber:
-  #   Type: String
-  #   Default: '707017293678'
   pRegion1Name:
     Type: String
     Default: 'us-east-1'
+  
+  # Override this
+  pCodePipelineRoleName:
+    Type: String
+    Default: RabbitCodePipelineRole
+  pVPCId:
+    Description: VPC ID
+    Type: String
+    #Default: 'vpc-0558302bd00b82413'
+  pAppSubnetCIDR1:
+    Description: An Array of the Intranet Subnet IDs
+    Type: String
+    #Default: '10.0.128.0/20'
+  # pAppSubnetCIDR2:
+  #   Description: An Array of the Intranet Subnet IDs
+  #   Type: String
+  # pAppSubnetCIDR3:
+  #   Description: An Array of the Intranet Subnet IDs
+  #   Type: String
+  pAppSubnet1Id:
+    Type: String
+    Description: AppSubnet1 ID
+    # Default: 'subnet-036443d9dc9f4edff'
+  # pAppSubnet2Id:
+  #   Type: String
+  #   Description: AppSubnet2 ID
+  #   Default: 'None'
+  # pAppSubnet3Id:
+  #   Type: String
+  #   Description: AppSubnet3 ID
+  #   Default: 'None'
+  pInstanceCount:
+    Type: String
+    Description: Instance Count for EC2 ASG
+    Default: '1'
+  pInstanceType:
+    Type: String
+    Description: Instance size for app
+    Default: t2.micro
+
+  pAdminUsername:
+    Description: The admin username for RabbitMQ (Can't contain commas, colons, equals signs, or spaces)
+    Type: String
+    Default: rabbit-admin
+    MinLength: '12'
+
 
 Resources:
 
@@ -66,6 +109,7 @@ Resources:
   rCodePipelineRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      RoleName: !Ref pCodePipelineRoleName
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -187,10 +231,17 @@ Resources:
                 ParameterOverrides: !Sub |
                   {
                     "pLambdaCodeBucket":"${rS3RabbitStorageBucket}",
-                    "pObjectVersion":{"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]}
+                    "pObjectVersion":{"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]},
+                    "pCodePipelineRoleName":"${pCodePipelineRoleName}",
+                    "pVPCId":"${pVPCId}",
+                    "pAppSubnetCIDR1":"${pAppSubnetCIDR1}",
+                    "pAppSubnet1Id":"${pAppSubnet1Id}",
+                    "pInstanceCount":"${pInstanceCount}",
+                    "pInstanceType":"${pInstanceType}",
+                    "pAdminUsername":"${pAdminUsername}"
                   }
                 TemplatePath: !Sub Source::${pTemplatePath}
-                TemplateConfiguration: !Sub Source::${pConfigurationPathDev}
+                # TemplateConfiguration: !Sub Source::${pConfigurationPathDev}
                 OutputFileName: Outputs-Dev.json
               InputArtifacts:
                 - Name: Source
