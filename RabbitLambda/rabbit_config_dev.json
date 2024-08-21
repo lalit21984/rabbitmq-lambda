@@ -3,7 +3,7 @@
     "users": [
         {
             "name": "my-app",
-            "password_hash": "414fa8f409fefc8d4e6f5597b36b50bc47293f450920382e7deedd80632ad4f0",
+            "password_hash": "numerical_value",
             "hashing_algorithm": "rabbit_password_hashing_sha256",
             "tags": "administrator-tag"
         }
@@ -47,7 +47,7 @@
     ],
     "exchanges": [
         {
-            "name": "my-app-ex",
+            "name": "my-app-",
             "vhost": "my-app",
             "type": "direct",
             "durable": true,
@@ -58,11 +58,11 @@
     ],
     "bindings": [
         {
-            "source": "my-app-ex",
+            "source": "my-app",
             "vhost": "my-app",
             "destination": "app-queue",
             "destination_type": "queue",
-            "routing_key": "simlock",
+            "routing_key": "key",
             "arguments": {}
         }
     ]
