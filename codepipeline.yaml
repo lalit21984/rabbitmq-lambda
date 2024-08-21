@@ -142,10 +142,8 @@ Parameters:
     Type: String
     #Type: 'AWS::SSM::Parameter::Value<String>'
     #Default: '/accounts/SharedServices/Prod/id'
-    Default: '810246177697'
   pDevAccountNumber:
     Type: AWS::SSM::Parameter::Value<String>
-    Default: '810246177697'
   # pTestAccountNumber:
   #   Type: AWS::SSM::Parameter::Value<String>
   #   Default: '/accounts/test/id'
@@ -157,7 +155,6 @@ Parameters:
   #   Default: '/accounts/prod/id'
   pDeplAccountNumber:
     Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '810246177697'
   pRegion1Name:
     Type: String
     #Type: 'AWS::SSM::Parameter::Value<String>'
