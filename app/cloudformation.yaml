@@ -36,15 +36,15 @@ Parameters:
   pTagteamTeamOwner:
     Type: String
     AllowedPattern: '[^\s@]+@[^\s@]+\.[^\s@]+'
-    Default: lalit.sahu@mail.com # REPLACE ME
+    Default: first.last@mail.com # REPLACE ME
   pTagteamLaunchedBy:
     Type: String
     AllowedPattern: '[^\s@]+@[^\s@]+\.[^\s@]+'
-    Default: lalit.sahu@mail.com # REPLACE ME
+    Default: first.last@mail.com # REPLACE ME
   pTagteamResourceCustodian:
     Type: String
     AllowedPattern: '[^\s@]+@[^\s@]+\.[^\s@]+'
-    Default: lalit.sahu@mail.com # REPLACE ME
+    Default: first.last@mail.com # REPLACE ME
   pVsadTag:
     #Type: 'AWS::SSM::Parameter::Value<String>'
     Type: String
@@ -65,7 +65,7 @@ Parameters:
   #   #Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
   #    Type: String
   #   Description: SSM parameter for latest AMI ID
-  #   Default: 'ami-00abfd8da690f984d'
+  #   Default: 'ami-abcdef'
 
   ## Pipeline Parameters
   pMainRegion:
@@ -81,15 +81,15 @@ Parameters:
   pVPCId:
     Description: VPC ID
     Type: String
-    Default: 'vpc-098f2593862b9767b'
+    Default: 'vpc-123'
   pAppSubnets:
     Description: An Array of the App Subnet IDs
     Type: List<AWS::EC2::Subnet::Id>
-    Default: subnet-02ad3496839c3117a
+    Default: subnet-1
   pAppSubnetCIDR1:
     Description: An Array of the Intranet Subnet IDs
     Type: String
-    Default: '10.0.1.0/24'
+    Default: '10.0.0.0/24'
   # pAppSubnetCIDR2:
   #   Description: An Array of the Intranet Subnet IDs
   #   Type: String
@@ -145,7 +145,7 @@ Parameters:
   pLambdaCodeBucket:
     Type: String
     Description: S3 Bucket that contains the Lambda Code for RabbitMQ
-    Default: "cf-templates-s3uaul2id9rr-us-east-1"
+    Default: "cf-templates--us-east-1"
   pObjectVersion:
     Type: String
     Description: S3 Version of the Lambda Code to use
@@ -153,7 +153,7 @@ Parameters:
   pAppSubnet1:
     Type: String
     Description: AppSubnet1 ID
-    Default: 'subnet-02ad3496839c3117a'
+    Default: 'subnet-1'
   # pAppSubnet2:
   #   Type: String
   #   Description: AppSubnet2 ID
@@ -318,27 +318,9 @@ Resources:
         - IpProtocol: tcp
           FromPort: 5671
           ToPort: 5671
-          CidrIp: '10.0.1.0/24' #!Ref pMQcidr1
+          CidrIp: '10.0.0.0/24' #!Ref pMQcidr1
           Description: Egress to IntraSubnet1 for Rabbit MQ Custom DNS
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-secgroup-${pEnvironment}-instances
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Security Group to allow access to Application Instances by Console ALB
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+
 
   rApplicationInstanceASG:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -419,39 +401,6 @@ Resources:
         - Key: Name
           Value: !Sub ${pProduct}-asg-${pEnvironment}-instances
           PropagateAtLaunch: false
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-          PropagateAtLaunch: true
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-          PropagateAtLaunch: true
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
-          PropagateAtLaunch: true
-        - Key: team:customer-data
-          Value: !Ref pTagteamCustomerData
-          PropagateAtLaunch: true
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-          PropagateAtLaunch: true
-        - Key: team:ec2:os
-          Value: amazon.linux.2
-          PropagateAtLaunch: true
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-          PropagateAtLaunch: true
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-          PropagateAtLaunch: true
-        - Key: team:purpose
-          Value: AutoScaling Group for Application Instances
-          PropagateAtLaunch: false
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-          PropagateAtLaunch: true
-        - Key: team:role
-          Value: !Ref pTagteamRole
-          PropagateAtLaunch: true
 
   rApplicationASGScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
@@ -485,7 +434,7 @@ Resources:
               VolumeType: sc1
         IamInstanceProfile:
           Name: !Ref rApplicationInstanceProfile
-        ImageId: ami-026c9a2324f95056d #ami-00abfd8da690f984d
+        ImageId: ami-7 #ami-6
         InstanceType: !Ref pInstanceType #c5a.large
         MetadataOptions:
           HttpEndpoint: enabled
@@ -605,22 +554,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${pProduct}-kms-${pEnvironment}-rabbitpwd
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: KMS Key for RabbitMQ Password
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
 
   rRabbitPasswordSecret:
     Type: AWS::SecretsManager::Secret
@@ -634,22 +567,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${pProduct}-secret-${pEnvironment}-rabbitpwd
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Secret for RabbitMQ password
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
 
   rRabbitUserPasswordKMSKeyAlias:
     DeletionPolicy: Retain
@@ -724,22 +641,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${pProduct}-kms-${pEnvironment}-rabbituserpwd
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: KMS Key for RabbitMQ User Password
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
 
   rRabbituserPasswordSecret:
     Type: AWS::SecretsManager::Secret
@@ -753,22 +654,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${pProduct}-secret-${pEnvironment}-rabbituserpwd
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: Secret for RabbitMQ password
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
 
   rRabbitMQClusterSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -853,7 +738,7 @@ Resources:
       HostInstanceType: mq.m5.large
       Logs:
         General: true
-      MaintenanceWindowStartTime: # @Product Team
+      MaintenanceWindowStartTime: # Team
         DayOfWeek: Monday
         TimeOfDay: "00:00"
         TimeZone: America/Chicago
@@ -876,22 +761,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${pProduct}-mqbroker-${pEnvironment}-rabbitcluster
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: RabbitMQ broker/cluster
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+
     
   rRabbitConfigureFunction:
     #Condition: cIsMainRegion
@@ -1012,19 +882,19 @@ Resources:
 #       Name: !Sub "${AWS::StackName}-appAppPublicTG" 
 #   oApplicationTargetGroupPubliciot:
 #     Description: Target Group for Public ALB
-#     Value: !Ref rApplicationTargetGroupPubliciot
+#     Value: !Ref rApplicationTargetGroupPublic
 #     Export:
-#       Name: !Sub "${AWS::StackName}-appAppPublicTGiot" 
+#       Name: !Sub "${AWS::StackName}-appAppPublicTG" 
 #   oApplicationTargetGroupConsole:
 #     Description: Target group for Console ALB
 #     Value: !Ref rApplicationTargetGroupConsole
 #     Export:
 #       Name: !Sub "${AWS::StackName}-appAppConsoleTG"
-#   oApplicationTargetGroupConsoleiot:
+#   oApplicationTargetGroupConsole:
 #     Description: Target group for Console ALB
-#     Value: !Ref rApplicationTargetGroupConsoleiot
+#     Value: !Ref rApplicationTargetGroupConsole
 #     Export:
-#       Name: !Sub "${AWS::StackName}-appAppConsoleTGiot"
+#       Name: !Sub "${AWS::StackName}-appAppConsoleTG"
 #   oPublicALBSecurityGroup01:
 #     Description: Public ALB Security Group
 #     Value: 
@@ -1074,8 +944,3 @@ Resources:
 #         - CanonicalHostedZoneID
 #     Export:
 #       Name: !Sub "${AWS::StackName}-DBNetworkLoadBalancerID"
-#   oTempOutput:
-#     Description: Test
-#     Value: 123
-#     Export:
-#       Name: Tester-Test
