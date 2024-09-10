@@ -3,204 +3,88 @@ Description: Sample Template for team Simple-CloudFormation for app
 Transform: 'AWS::Serverless-2016-10-31' # Remove if not using a serverless function
 
 Parameters:
-  ## team TAGS
-  pProduct:
+  product:
     Description: Name of the instance
     Type: String
     Default: 'is'
-  pEnvironment:
+  env:
     Description: Environment Name
     Type: String
     Default: 'dev'
-  pTagteamRole:
-    Type: String
-    AllowedValues:
-      - app
-      - web
-      - db
-    Default: 'app'
-  pTagteamDataclass:
-    Type: String
-    AllowedValues:
-      - public
-      - private
-      - conf
-      - high-conf
-    Default: high-conf
-  pTagteamCustomerData:
-    Type: String
-    AllowedValues:
-      - 'true'
-      - 'false'
-    Default: 'false'
-  pTagteamTeamOwner:
-    Type: String
-    AllowedPattern: '[^\s@]+@[^\s@]+\.[^\s@]+'
-    Default: first.last@mail.com # REPLACE ME
-  pTagteamLaunchedBy:
-    Type: String
-    AllowedPattern: '[^\s@]+@[^\s@]+\.[^\s@]+'
-    Default: first.last@mail.com # REPLACE ME
-  pTagteamResourceCustodian:
-    Type: String
-    AllowedPattern: '[^\s@]+@[^\s@]+\.[^\s@]+'
-    Default: first.last@mail.com # REPLACE ME
-  pVsadTag:
-    #Type: 'AWS::SSM::Parameter::Value<String>'
-    Type: String
-    Description: VZ VSAD ID
-    #Default: '/accounts/vsad/id'
-    Default: 'Dummyvastid'
-  pVastTag:
-    #Type: 'AWS::SSM::Parameter::Value<String>'
-    Type: String
-    Description: VZ VAST ID
-    #Default: '/accounts/vast/id'
-    Default: 'Dummyvastid'
-  # pALBAccessLogBucketParam:
-  #   Type: 'AWS::SSM::Parameter::Value<String>'
-  #   Description: ALB Access Log Bucket
-  #   Default: '/accounts/logging/aws-load-balancer-log-bucket'
-  # pLatestAMIImage:
-  #   #Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
-  #    Type: String
-  #   Description: SSM parameter for latest AMI ID
-  #   Default: 'ami-abcdef'
 
   ## Pipeline Parameters
-  pMainRegion:
+  Region:
     Type: String
     Description: Main Region for Infrastructure
     Default: us-east-1
-  pRegion2Active:
+  Region2Active:
     Type: String
     Description: Parameter to activate R2 or not
     Default: No
 
   ## App Specific Parameters
-  pVPCId:
+  VPCId:
     Description: VPC ID
     Type: String
     Default: 'vpc-123'
-  pAppSubnets:
+  AppSubnets:
     Description: An Array of the App Subnet IDs
     Type: List<AWS::EC2::Subnet::Id>
     Default: subnet-1
-  pAppSubnetCIDR1:
+  AppSubnetCIDR1:
     Description: An Array of the Intranet Subnet IDs
     Type: String
     Default: '10.0.0.0/24'
-  # pAppSubnetCIDR2:
-  #   Description: An Array of the Intranet Subnet IDs
-  #   Type: String
-  # pAppSubnetCIDR3:
-  #   Description: An Array of the Intranet Subnet IDs
-  #   Type: String
-  # pIntraSubnets:
-  #   Description: An Array of the Intranet Subnet IDs
-  #   Type: List<AWS::EC2::Subnet::Id>
-  # pIntraSubnetCIDR1:
-  #   Description: An Array of the Intranet Subnet IDs
-  #   Type: String
-  # pIntraSubnetCIDR2:
-  #   Description: An Array of the Intranet Subnet IDs
-  #   Type: String
-  # pIntraSubnetCIDR3:
-  #   Description: An Array of the Intranet Subnet IDs
-  #   Type: String
-  # pInstanceCount:
-  #   Type: String
-  #   Description: Instance Count for EC2 ASG
-  # pMaxInstanceCount:
-  #   Type: String
-  #   Description: Max Instance Count for EC2 ASG
-  # pDevInstanceCount:
-  #   Type: String
-  #   Description: Instance Count for EC2 ASG in Dev
-  #   Default: will be overridden in dev
-  # pDevMaxInstanceCount:
-  #   Type: String
-  #   Description: Max Instance Count for EC2 ASG in Dev
-  #   Default: will be overridden in dev
-  pInstanceWarmup:
+  InstanceWarmup:
     Type: String
     Description: Time in Seconds from Instance Launch Before Contributing to Scaling Metrics
     Default: 720
-  pInstanceType:
+  InstanceType:
     Type: String
     Description: Instance size for app
     Default: c5a.large
-  pAutoscalingCPUTarget:
+  AutoscalingCPUTarget:
     Type: String
     Description: Target % of CPU Usage to Target for the Application ASG
     Default: 70 #(change 80 for dev )
-  # pArtifactBucketKeyArn:
-  #   Type: String
-  #   Description: Arn of the Deployment Account Artifact Bucket KMS Key
-  # pDbCidr:
-  #   Type: CommaDelimitedList
-  #   Description: Database Subnet CIDR blocks
   
   ## AmazonMQ specific Parameters
-  pLambdaCodeBucket:
+  LambdaCodeBucket:
     Type: String
     Description: S3 Bucket that contains the Lambda Code for RabbitMQ
     Default: "cf-templates--us-east-1"
-  pObjectVersion:
+  ObjectVersion:
     Type: String
     Description: S3 Version of the Lambda Code to use
     Default: "1"
-  pAppSubnet1:
+  AppSubnet1:
     Type: String
     Description: AppSubnet1 ID
     Default: 'subnet-1'
-  # pAppSubnet2:
-  #   Type: String
-  #   Description: AppSubnet2 ID
-  #   Default: 'None'
-  # pAppSubnet3:
-  #   Type: String
-  #   Description: AppSubnet3 ID
-  #   Default: 'None'
-  pAdminUsername:
+  AdminUsername:
     Description: The admin username for RabbitMQ (Can't contain commas, colons, equals signs, or spaces)
     Type: String
     Default: rabbit-admin
     MinLength: 12
-  # pMQcidr1:
-  #   Description: CIDR Range for Intra1 subnet for MQ Custom DNS
-  #   Type: String
-  # pMQcidr2:
-  #   Description: CIDR Range for Intra2 subnet for MQ Custom DNS
-  #   Type: String
-  # pMQcidr3:
-  #   Description: CIDR Range for Intra3 subnet for MQ Custom DNS
-  #   Type: String
-    
-  # pPostgreSQLIP:
-  #   Description: IP address of the team Destination DB Cluster
-  #   Type: String
+
 
 Conditions:
-  cIsMainRegion: !Equals [!Ref AWS::Region, !Ref pMainRegion]
+  cIsMainRegion: !Equals [!Ref AWS::Region, !Ref Region]
   cIsR2: !Not [!Condition cIsMainRegion]
-  cIsR2Active: !Equals [!Ref pRegion2Active, "Yes"]
+  cIsR2Active: !Equals [!Ref Region2Active, "Yes"]
   cIsR2andActive: !And [!Condition cIsR2, !Condition cIsR2Active]
   cIsR2ActiveOrIsMain: !Or [!Condition cIsMainRegion, !Condition cIsR2andActive]
-  #cIsPreProd: !Equals [!Ref pEnvironment, "preprod"]
-  cIsProd: !Equals [!Ref pEnvironment, "prod"]
+  cIsProd: !Equals [!Ref env, "prod"]
   cIsNonProd: !Not [!Condition cIsProd]
-  cIsDev: !Equals [!Ref pEnvironment, "dev"]
-  #cIsapp3: !Or [!Condition cIsDev, !Condition cIsProd] ## Create app3 Server when environment is 'dev' or 'prod'
-  # cIsPreProd: !Equals [!Ref pEnvironment, "preprod"]
-  # cIsEitherProd: !Or [!Condition cIsPreProd, !Condition cIsProd]
+  cIsDev: !Equals [!Ref env, "dev"]
+  cIsEitherProd: !Or [!Condition cIsPreProd, !Condition cIsProd]
 
 Resources:
   ## Application server cluster IAM resources
   rApplicationInstanceRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${pProduct}-role-${pEnvironment}-instance-${AWS::Region}
+      RoleName: !Sub ${product}-role-${env}-instance-${AWS::Region}
       AssumeRolePolicyDocument:
         Statement:
           - Action: sts:AssumeRole
@@ -222,11 +106,7 @@ Resources:
                 Action:
                   - secretsmanager:GetSecretValue
                 Resource: 
-                  #- !ImportValue iSSPubArn
-                  #- !ImportValue iSSPrivArn
-                  #- !Sub arn:aws:secretsmanager:us-east-1:${AWS::AccountId}:secret:ab-app-aurora-postgresql/aurora/*
-                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ab-app-app-secret-${pEnvironment}-rabbituser*
-                  #- !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${pProduct}-secret-${pEnvironment}-iotOracledbPassword*
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:ab-app-app-secret-${env}-rabbit*
               - Sid: allowkmsforsecrets
                 Effect: Allow
                 Action:
@@ -238,25 +118,7 @@ Resources:
                 Condition:
                   ForAnyValue:StringLike:
                     kms:ResourceAliases:
-                      #- !Sub alias/ab-app2-app-app-ss-secrets
-                      #- !Sub alias/ab-app-aurora-postgresql-db-root-secret-key
-                      #- !Sub alias/ab-app-aurora-postgresql-db-user-secret-key
-                      #- !Sub alias/ab-app-aurora-postgresql-AuroraClusterKey
-                      - !Sub alias/${pProduct}-rabbit-user-pwd-key
-                      #- !Sub alias/${pProduct}-iotOracledb-pwd-key
-              # - Sid: allowkmsfors3
-              #   Effect: Allow
-              #   Action:
-              #     - kms:DescribeKey
-              #     - kms:Decrypt
-              #     - kms:Encrypt
-              #     - kms:GenerateDataKey
-              #   Resource: !Sub arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/*
-              #   Condition:
-              #     ForAnyValue:StringLike:
-              #       kms:ResourceAliases:
-              #         - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata-${AWS::Region}
-              #         - !Sub alias/ab-app2-app-app-alias-${pEnvironment}-userdata
+                      - !Sub alias/${product}-rabbit-user-pwd-key
               - Sid: allowkmsfordepls3
                 Effect: Allow
                 Action:
@@ -265,25 +127,6 @@ Resources:
                   - kms:Encrypt
                   - kms:GenerateDataKey
                 Resource: '*'
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-role-${pEnvironment}-instance-${AWS::Region}
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast-id
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: IAM Role for Application EC2 Instance
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
 
   rApplicationInstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -294,8 +137,8 @@ Resources:
   rApplicationSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub ${pProduct}-secgroup-${pEnvironment}-instances
-      VpcId: !Ref pVPCId
+      GroupName: !Sub ${product}-secgroup-${env}-instances
+      VpcId: !Ref VPCId
       GroupDescription: Enable Outbound Internet and Console NLB Ingress Access to Application Instances
       SecurityGroupIngress:
         - IpProtocol: -1
@@ -324,39 +167,8 @@ Resources:
 
   rApplicationInstanceASG:
     Type: AWS::AutoScaling::AutoScalingGroup
-    # CreationPolicy:
-    #   ResourceSignal:
-    #     Count: 
-    #       !If
-    #         - cIsMainRegion
-    #         - !If
-    #             - cIsDev
-    #             - 1 #!Ref pDevInstanceCount
-    #             - 1 #!Ref pInstanceCount
-    #         - !If
-    #             - cIsR2andActive
-    #             - !If
-    #                 - cIsDev
-    #                 - 1 #!Ref pDevInstanceCount
-    #                 - 1 #!Ref pInstanceCount
-    #             - 0 # First deployment to R2 behavior (starting on or off)
-    #     Timeout: PT18M
-    # UpdatePolicy:
-    #   AutoScalingRollingUpdate:
-    #     !If
-    #       - cIsMainRegion
-    #       - 
-    #         PauseTime: PT18M # Region 1 constant behavior
-    #         WaitOnResourceSignals: true
-    #       - !If
-    #           - cIsR2andActive
-    #           - 
-    #             PauseTime: PT18M # Region 2 activated/updated behavior
-    #             WaitOnResourceSignals: true
-    #           - 
-    #             !Ref AWS::NoValue # Tear down R2 behavior
     Properties:
-      AutoScalingGroupName: !Sub ${pProduct}-asg-${pEnvironment}-instances-1
+      AutoScalingGroupName: !Sub ${product}-asg-${env}-instances-1
       MinSize:
         !If
           - cIsR2ActiveOrIsMain
@@ -381,43 +193,35 @@ Resources:
             - 1 #!Ref pDevInstanceCount
             - 1 #!Ref pInstanceCount
           - '0'
-      # TargetGroupARNs:
-      #   - !Ref rApplicationTargetGroupConsole
-      #   - !Ref rApplicationTargetGroupPublic
-      #   - !Ref rApplicationTargetGroupPubliciot
-      #   - !Ref rApplicationTargetGroupConsoleiot
+
       HealthCheckGracePeriod: 300
       NewInstancesProtectedFromScaleIn: false
       LaunchTemplate:
         LaunchTemplateId: !Ref rApplicationLaunchTemplate
         Version: !GetAtt rApplicationLaunchTemplate.LatestVersionNumber
-      VPCZoneIdentifier: !Ref pAppSubnets
+      VPCZoneIdentifier: !Ref AppSubnets
       MetricsCollection:
         - Granularity: "1Minute"
           Metrics:
             - "GroupMinSize"
             - "GroupMaxSize"
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-asg-${pEnvironment}-instances
-          PropagateAtLaunch: false
 
   rApplicationASGScalingPolicy:
     Type: AWS::AutoScaling::ScalingPolicy
     Properties: 
       AutoScalingGroupName: !Ref rApplicationInstanceASG
-      EstimatedInstanceWarmup: !Ref pInstanceWarmup
+      EstimatedInstanceWarmup: !Ref InstanceWarmup
       # MetricAggregationType: Average
       PolicyType: TargetTrackingScaling
       TargetTrackingConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ASGAverageCPUUtilization
-        TargetValue: !Ref pAutoscalingCPUTarget
+        TargetValue: !Ref AutoscalingCPUTarget
 
   rApplicationLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
-      LaunchTemplateName: !Sub ${pProduct}-launchtemp-${pEnvironment}-instances
+      LaunchTemplateName: !Sub ${product}-launchtemp-${env}-instances
       LaunchTemplateData:
         BlockDeviceMappings:
           - DeviceName: /dev/xvda
@@ -435,7 +239,7 @@ Resources:
         IamInstanceProfile:
           Name: !Ref rApplicationInstanceProfile
         ImageId: ami-7 #ami-6
-        InstanceType: !Ref pInstanceType #c5a.large
+        InstanceType: !Ref InstanceType #c5a.large
         MetadataOptions:
           HttpEndpoint: enabled
           HttpPutResponseHopLimit: 2
@@ -444,33 +248,6 @@ Resources:
           Enabled: true
         SecurityGroupIds:
           - !Ref rApplicationSecurityGroup
-        TagSpecifications:
-          - ResourceType: instance
-            Tags: 
-              - Key: Name
-                Value: !Sub ${pProduct}-${pEnvironment}-instance
-              - Key: team:launched-by
-                Value: !Ref pTagteamLaunchedBy
-              - Key: team:resource-custodian
-                Value: !Ref pTagteamResourceCustodian
-              - Key: team:team-owner
-                Value: !Ref pTagteamTeamOwner
-              - Key: team:customer-data
-                Value: !Ref pTagteamCustomerData
-              - Key: team:dataclass
-                Value: !Ref pTagteamDataclass
-              - Key: team:ec2:os
-                Value: amazon.linux.2
-              - Key: team:vast-id
-                Value: !Ref pVastTag
-              - Key: team:vsad
-                Value: !Ref pVsadTag
-              - Key: team:purpose
-                Value: Application Instance
-              - Key: team:lifecycle
-                Value: !Ref pEnvironment
-              - Key: team:role
-                Value: !Ref pTagteamRole
 
   ### AmazonMQ Resources
   rRabbitPasswordKMSKeyAlias:
@@ -478,7 +255,7 @@ Resources:
     UpdateReplacePolicy: Retain
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub alias/${pProduct}-rabbit-pwd-key
+      AliasName: !Sub alias/${product}-rabbit-pwd-key
       TargetKeyId: !Ref rRabbitPasswordKMSKey
 
   rRabbitPasswordKMSKey:
@@ -542,38 +319,24 @@ Resources:
                 kms:GrantIsForAWSResource: !!bool 'true'
               StringEquals:
                 aws:PrincipalAccount: !Ref AWS::AccountId
-            # - Sid: Key administration permissions
-            #   Effect: Allow
-            #   Principal:
-            #     AWS:
-            #     - Fn::Sub: arn:aws:iam::${AWS::AccountId}:root
-            #   Action:
-            #   - kms:*
-            #   Resource: '*'
       PendingWindowInDays: !!int '30'
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-kms-${pEnvironment}-rabbitpwd
 
   rRabbitPasswordSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: !Sub ${pProduct}-secret-${pEnvironment}-rabbitpwd
+      Name: !Sub ${product}-secret-${env}-rabbitpwd
       Description: The password for the rabbit-admin user in RabbitMQ
       KmsKeyId: !Ref rRabbitPasswordKMSKey
       GenerateSecretString:
         PasswordLength: 15
         ExcludeCharacters: ',:='
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-secret-${pEnvironment}-rabbitpwd
 
   rRabbitUserPasswordKMSKeyAlias:
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Type: AWS::KMS::Alias
     Properties:
-      AliasName: !Sub alias/${pProduct}-rabbit-user-pwd-key
+      AliasName: !Sub alias/${product}-rabbit-user-pwd-key
       TargetKeyId: !Ref rRabbitUserPasswordKMSKey
 
   rRabbitUserPasswordKMSKey:
@@ -638,28 +401,22 @@ Resources:
               StringEquals:
                 aws:PrincipalAccount: !Ref AWS::AccountId
       PendingWindowInDays: !!int '30'
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-kms-${pEnvironment}-rabbituserpwd
 
   rRabbituserPasswordSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
-      Name: !Sub ${pProduct}-secret-${pEnvironment}-rabbituserpwd
+      Name: !Sub ${product}-secret-${env}-rabbituserpwd
       Description: The password for the app-app user in RabbitMQ
       KmsKeyId: !Ref rRabbitUserPasswordKMSKey
       GenerateSecretString:
         PasswordLength: 15
         ExcludeCharacters: ',:='
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-secret-${pEnvironment}-rabbituserpwd
 
   rRabbitMQClusterSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Sub ${pProduct}-secgroup
-      VpcId: !Ref pVPCId
+      GroupName: !Sub ${product}-secgroup
+      VpcId: !Ref VPCId
       GroupDescription: Enable RabbitMQ Access within SecGroup
       SecurityGroupEgress:
         - IpProtocol: -1
@@ -682,20 +439,20 @@ Resources:
         - CidrIp: "0.0.0.0/0"
           IpProtocol: "-1"
         - IpProtocol: tcp
-          CidrIp: !Ref pAppSubnetCIDR1
+          CidrIp: !Ref AppSubnetCIDR1
           FromPort: 5671
           ToPort: 5671
           Description: Allowing inbound from App Subnet1
         - IpProtocol: tcp
-          CidrIp: !Ref pAppSubnetCIDR1
+          CidrIp: !Ref AppSubnetCIDR1
           FromPort: 443
           ToPort: 443
           Description: Allowing inbound from App Subnet1
       Tags:
         - Key: Name
-          Value: !Sub ${pProduct}-secgroup-${pEnvironment}-rabbitcluster
+          Value: !Sub ${product}-secgroup-${env}-rabbitcluster
         - Key: team:lifecycle
-          Value: !Ref pEnvironment
+          Value: !Ref env
         - Key: team:vsad
           Value: !Ref pVsadTag
         - Key: team:vast
@@ -703,13 +460,13 @@ Resources:
         - Key: team:purpose
           Value: Security Group for RabbitMQ cluster
         - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
+          Value: !Ref TagteamDataclass
         - Key: team:launched-by
           Value: !Ref pTagteamLaunchedBy
         - Key: team:resource-custodian
           Value: !Ref pTagteamResourceCustodian
         - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
+          Value: !Ref TagteamTeamOwner
   
   rRabbitMQInternalEgress:
     Type: AWS::EC2::SecurityGroupEgress
@@ -723,14 +480,8 @@ Resources:
     Type: AWS::AmazonMQ::Broker
     Properties:
       AutoMinorVersionUpgrade: false # @Product Team
-      BrokerName: !Sub ${pProduct}-mqbroker-${pEnvironment}-rabbitmq-1
+      BrokerName: !Sub ${product}-mqbroker-${env}-rabbitmq-1
       DeploymentMode: SINGLE_INSTANCE
-                          #!If 
-      #                   - cIsProd
-      #                   - CLUSTER_MULTI_AZ
-      #                   - !If
-      #                     - cIsPreProd
-      #                     - CLUSTER_MULTI_AZ
                           
       EngineType: RABBITMQ
       EngineVersion: 3.9.13
@@ -745,33 +496,26 @@ Resources:
       PubliclyAccessible: false
       SecurityGroups: [!Ref rRabbitMQClusterSecurityGroup]
       SubnetIds: 
-        - !Ref pAppSubnet1
-                  #!If
-                    #- cIsProd
-                    # - [!Ref pAppSubnet1, !Ref pAppSubnet2, !Ref pAppSubnet3]
-                    # - !If
-                    #   - cIsPreProd
-                    #   - [!Ref pAppSubnet1, !Ref pAppSubnet2, !Ref pAppSubnet3]
-                    #   - [!Ref pAppSubnet1]
+        - !Ref AppSubnet1
       Users: 
         - 
           Password: !Sub '{{resolve:secretsmanager:${rRabbitPasswordSecret}:SecretString}}'
-          Username: !Ref pAdminUsername
+          Username: !Ref AdminUsername
 
       Tags:
         - Key: Name
-          Value: !Sub ${pProduct}-mqbroker-${pEnvironment}-rabbitcluster
+          Value: !Sub ${product}-mqbroker-${env}-rabbitcluster
 
     
   rRabbitConfigureFunction:
     #Condition: cIsMainRegion
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
+      FunctionName: !Sub ${product}-lambda-${env}-configure-rabbit
       CodeUri:
-        Bucket: !Ref pLambdaCodeBucket
+        Bucket: !Ref LambdaCodeBucket
         Key: my-app/RabbitLambda.zip
-        Version: !Ref pObjectVersion
+        Version: !Ref ObjectVersion
       Environment:
         Variables:
           SECRET_ARN: !Ref rRabbitPasswordSecret
@@ -782,21 +526,11 @@ Resources:
         SecurityGroupIds:
           - !Ref rRabbitMQClusterSecurityGroup
         SubnetIds:
-          - !Ref pAppSubnet1
+          - !Ref AppSubnet1
       Handler: app.handler
       Role: !GetAtt rRabbitConfigureRole.Arn
       Runtime: python3.9
       Timeout: 30
-      Tags:
-        Name: !Sub ${pProduct}-lambda-${pEnvironment}-configure-rabbit
-        team:lifecycle : !Ref pEnvironment
-        team:vsad : !Ref pVsadTag
-        team:vast-id : !Ref pVastTag
-        team:purpose: Lambda function to configure RabbitMQ Cluster
-        team:dataclass: !Ref pTagteamDataclass
-        team:launched-by: !Ref pTagteamLaunchedBy
-        team:resource-custodian: !Ref pTagteamResourceCustodian
-        team:team-owner: !Ref pTagteamTeamOwner
   
   rRabbitConfigureCustomResource:
     #Condition: cIsMainRegion
@@ -854,93 +588,3 @@ Resources:
                   - ec2:AssignPrivateIpAddress
                   - ec2:UnassignPrivateIpAddress
                 Resource: '*'
-      Tags:
-        - Key: Name
-          Value: !Sub ${pProduct}-iamrole-${pEnvironment}-rabbit-configure-${AWS::Region}
-        - Key: team:lifecycle
-          Value: !Ref pEnvironment
-        - Key: team:vsad
-          Value: !Ref pVsadTag
-        - Key: team:vast
-          Value: !Ref pVastTag
-        - Key: team:purpose
-          Value: IAM Role for RabbitConfigure Lambda Function
-        - Key: team:dataclass
-          Value: !Ref pTagteamDataclass
-        - Key: team:launched-by
-          Value: !Ref pTagteamLaunchedBy
-        - Key: team:resource-custodian
-          Value: !Ref pTagteamResourceCustodian
-        - Key: team:team-owner
-          Value: !Ref pTagteamTeamOwner
-
-# Outputs:
-#   oApplicationTargetGroupPublic:
-#     Description: Target Group for Public ALB
-#     Value: !Ref rApplicationTargetGroupPublic 
-#     Export:
-#       Name: !Sub "${AWS::StackName}-appAppPublicTG" 
-#   oApplicationTargetGroupPubliciot:
-#     Description: Target Group for Public ALB
-#     Value: !Ref rApplicationTargetGroupPublic
-#     Export:
-#       Name: !Sub "${AWS::StackName}-appAppPublicTG" 
-#   oApplicationTargetGroupConsole:
-#     Description: Target group for Console ALB
-#     Value: !Ref rApplicationTargetGroupConsole
-#     Export:
-#       Name: !Sub "${AWS::StackName}-appAppConsoleTG"
-#   oApplicationTargetGroupConsole:
-#     Description: Target group for Console ALB
-#     Value: !Ref rApplicationTargetGroupConsole
-#     Export:
-#       Name: !Sub "${AWS::StackName}-appAppConsoleTG"
-#   oPublicALBSecurityGroup01:
-#     Description: Public ALB Security Group
-#     Value: 
-#       !GetAtt
-#         - rPublicALBSecurityGroup01
-#         - GroupId
-#     Export:
-#       Name: !Sub "${AWS::StackName}-appPublicALBSG-01"
-#   oConsoleALBSecurityGroup:
-#     Description: Console ALB Security Group
-#     Value: 
-#       !GetAtt
-#         - rConsoleALBSecurityGroup  
-#         - GroupId
-#     Export:
-#       Name: !Sub "${AWS::StackName}-appConsoleALBSG"
-#   oapp3NetworkLoadBalancer:
-#     Description: Console NLB
-#     Value:
-#       !GetAtt
-#         - rapp3NetworkLoadBalancer
-#         - DNSName
-#     Export:
-#       Name: !Sub "${AWS::StackName}-app3NetworkLoadBalancer"
-#   oapp3NetworkLoadBalancerId:
-#     Description: Console NLB Hosted zone ID
-#     Value:
-#       !GetAtt
-#         - rapp3NetworkLoadBalancer
-#         - CanonicalHostedZoneID
-#     Export:
-#       Name: !Sub "${AWS::StackName}-app3NetworkLoadBalancerID"
-  
-#   oDBNetworkLoadBalancer:
-#     Description: Console NLB for DB
-#     Value:
-#       !GetAtt
-#         - rDBNetworkLoadBalancer
-#         - DNSName
-#     Export:
-#       Name: !Sub "${AWS::StackName}-DBNetworkLoadBalancer"
-#   oDBNetworkLoadBalancerId:
-#     Description: Console NLB for DB Hosted zone ID
-#     Value:
-#       !GetAtt
-#         - rDBNetworkLoadBalancer
-#         - CanonicalHostedZoneID
-#     Export:
-#       Name: !Sub "${AWS::StackName}-DBNetworkLoadBalancerID"
