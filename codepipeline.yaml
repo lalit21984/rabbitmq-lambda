@@ -27,101 +27,43 @@ Parameters:
       - 'No'
     Default: 'Yes'
     Description: Deploy into the Dev account
-  # pDeployIntoTest: # Deploy Target: Test
-  #   Type: String
-  #   AllowedValues:
-  #     - 'Yes'
-  #     - 'No'
-  #   Default: 'Yes'
-  #   Description: Deploy into the Test account
-  pDeployIntoPreProd: # Deploy Target: PreProd
+  
+  pDeployIntoProd: # Deploy Target: Prod
     Type: String
     AllowedValues:
       - 'Yes'
       - 'No'
     Default: 'Yes'
-    Description: Deploy into the PreProd account
-  # pDeployIntoProd: # Deploy Target: Prod
-  #   Type: String
-  #   AllowedValues:
-  #     - 'Yes'
-  #     - 'No'
-    # Default: 'Yes'
-    # Description: Deploy into the Prod account
-  # pRegion2Active:
-  #   Type: String
-  #   Description: Deploy instances into secondary region
-  #   Default: 'No'
+    Description: Deploy into the Prod account
+
 
 # Approvals Before: Test / PreProd / Prod
-  # pApprovalIntoTest: # Require Approval before Test
-  #   Type: String
-  #   AllowedValues:
-  #     - 'Yes'
-  #     - 'No'
-  #   Default: 'Yes'
-  #   Description: Require Approval before Test
-  # pApprovalIntoPreProd: # Require Approval before PreProd
-  #   Type: String
-  #   AllowedValues:
-  #     - 'Yes'
-  #     - 'No'
-  #   Default: 'Yes'
-  #   Description: Require Approval before PreProd
-  # pApprovalIntoProd: # Require Approval before Prod
-  #   Type: String
-  #   AllowedValues:
-  #     - 'Yes'
-  #     - 'No'
-  #   Default: 'Yes'
-  #   Description: Require Approval before Prod
+  
+  pApprovalIntoProd: # Require Approval before Prod
+    Type: String
+    AllowedValues:
+      - 'Yes'
+      - 'No'
+    Default: 'Yes'
+    Description: Require Approval before Prod
 
 # Template Path: 
   pTemplatePath: 
     Type: String
     Default: 'app/cloudformation.yml'
     Description: Path to the template to deploy from the source or build artifact
-  # pTemplatePathRegion2: 
-  #   Type: String
-  #   Default: 'app/cloudformation.yml'
-  #   Description: Path to the template to deploy from the source or build artifact
  
 # Optional Configuration File for Dev
   pConfigurationPathDev: 
     Type: String
     Default: 'app/config/configuration-dev.json'
     Description: (Optional) CloudFormation Configuration file for Dev
-  # pConfigurationPathDevR2: 
-  #   Type: String
-  #   Default: 'app/config/configuration-dev-r2.json'
-  #   Description: (Optional) CloudFormation Configuration file for Dev
-# Optional Configuration File for Test
-  # pConfigurationPathTest: 
-  #   Type: String
-  #   Default: 'app/config/configuration-test.json'
-  #   Description: (Optional) CloudFormation Configuration file for Test
-  # pConfigurationPathTestR2: 
-  #   Type: String
-  #   Default: 'app/config/configuration-test-r2.json'
-  #   Description: (Optional) CloudFormation Configuration file for Test
-# Optional Configuration File for PreProd
-#   pConfigurationPathPreProd: 
-#     Type: String
-#     Default: 'app/config/configuration-preprod.json'
-#     Description: (Optional) CloudFormation Configuration file for PreProd
-#   pConfigurationPathPreProdR2: 
-#     Type: String
-#     Default: 'app/config/configuration-preprod-r2.json'
-#     Description: (Optional) CloudFormation Configuration file for PreProd
-# # Optional Configuration File for Prod
-#   pConfigurationPathProd: 
-#     Type: String
-#     Default: 'app/config/configuration-prod.json'
-#     Description: (Optional) CloudFormation Configuration file for Prod
-#   pConfigurationPathProdR2: 
-#     Type: String
-#     Default: 'app/config/configuration-prod-r2.json'
-#     Description: (Optional) CloudFormation Configuration file for Prod
+ 
+# Optional Configuration File for Prod
+  pConfigurationPathProd: 
+    Type: String
+    Default: 'app/config/configuration-prod.json'
+    Description: (Optional) CloudFormation Configuration file for Prod
 
 # Build Project: Yes / No
   pUseCodeBuildProject: 
@@ -138,24 +80,19 @@ Parameters:
     Description: Path to the buildspec file for the (optional) CodeBuild project 
 
 ### SSM Parameters
-  pSharedProdAccountNumber:
+  SharedAcc:
     Type: String
     #Type: 'AWS::SSM::Parameter::Value<String>'
     #Default: '/accounts/SharedServices/Prod/id'
   pDevAccountNumber:
     Type: AWS::SSM::Parameter::Value<String>
-  # pTestAccountNumber:
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   Default: '/accounts/test/id'
-  # pPreProdAccountNumber:
-  #   Type: AWS::SSM::Parameter::Value<String>
-  #   Default: '/accounts/preprod/id'
+  
   # pProdAccountNumber:
   #   Type: 'AWS::SSM::Parameter::Value<String>'
   #   Default: '/accounts/prod/id'
   pDeplAccountNumber:
     Type: 'AWS::SSM::Parameter::Value<String>'
-  pRegion1Name:
+  Region:
     Type: String
     #Type: 'AWS::SSM::Parameter::Value<String>'
     #Default: '/pipelinefactory/codepipeline/region1/name'
@@ -167,15 +104,6 @@ Parameters:
   pRegion1CodePipelineArtifactBucket:
     Type: 'AWS::SSM::Parameter::Value<String>'
     Default: '/pipelinefactory/codepipeline/region1/s3bucket'
-  pRegion2Name:
-    Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/pipelinefactory/codepipeline/region2/name'
-  pRegion2CodePipelineKmsKey:
-    Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/pipelinefactory/codepipeline/region2/kmskeyarn'
-  pRegion2CodePipelineArtifactBucket:
-    Type: 'AWS::SSM::Parameter::Value<String>'
-    Default: '/pipelinefactory/codepipeline/region2/s3bucket'
   pCodePipelineServiceRole:
     Type: 'AWS::SSM::Parameter::Value<String>'
     Default: '/pipelinefactory/codepipeline/iam/service'
@@ -192,32 +120,16 @@ Parameters:
 
 Conditions:
   cIsMainRegion: !Equals [!Ref AWS::Region, !Ref pMainRegion]
-  cIsR2: !Not [!Condition cIsMainRegion]
-
   cDeployToDev: !And
     - !Not [ !Equals  [!Ref pDevAccountNumber, 'null']]
     - !Equals [!Ref pDeployIntoDev, 'Yes' ]
-  # cDeployToTest: !And
-  #   - !Not [ !Equals  [!Ref pTestAccountNumber, 'null']]
-  #   - !Equals [!Ref pDeployIntoTest, 'Yes' ]
-  cDeployToPreProd: !And
-    - !Not [ !Equals  [!Ref pPreProdAccountNumber, 'null']]
-    - !Equals [!Ref pDeployIntoPreProd, 'Yes' ]
   cDeployToProd: !And
     - !Not [ !Equals  [!Ref pProdAccountNumber, 'null']]
     - !Equals [!Ref pDeployIntoProd, 'Yes' ]
-  # cApprovalIntoTest: !And
-  #   - Condition: cDeployToTest
-  #   - !Equals [!Ref pApprovalIntoTest, 'Yes' ]
-  cApprovalIntoPreProd: !And
-    - Condition: cDeployToPreProd
-    - !Equals [!Ref pApprovalIntoPreProd, 'Yes' ]
   cApprovalIntoProd: !And
     - Condition: cDeployToProd
     - !Equals [!Ref pApprovalIntoProd, 'Yes' ]
   cUseConfigurationDev: !Not [ !Equals [!Ref pConfigurationPathDev, '' ]]
-  # cUseConfigurationTest: !Not [ !Equals [!Ref pConfigurationPathTest, '' ]]
-  cUseConfigurationPreProd: !Not [ !Equals [!Ref pConfigurationPathPreProd, '' ]]
   cUseConfigurationProd: !Not [ !Equals [!Ref pConfigurationPathProd, '' ]]
   cUseCodeBuildProject: !Equals [!Ref pUseCodeBuildProject, 'Yes' ]
 
@@ -289,14 +201,8 @@ Resources:
         EnvironmentVariables:
           - Name: CODE_BUCKET_R1
             Value: !Ref pRegion1CodePipelineArtifactBucket
-          - Name: CODE_BUCKET_R2
-            Value: !Ref pRegion2CodePipelineArtifactBucket
           - Name: BUCKET_PREFIX
             Value: !Ref pProduct
-          # - Name: KMS_ARN_R1
-          #   Value: !Ref pRegion1CodePipelineKmsKey
-          # - Name: KMS_ARN_R2
-          #   Value: !Ref pRegion2CodePipelineKmsKey
       Source:
         Type: CODEPIPELINE
         BuildSpec: cicd/lambdabuildspec.yml
@@ -311,20 +217,14 @@ Resources:
     Properties:
       RestartExecutionOnUpdate: True
       ArtifactStores:
-        - Region: !Ref pRegion1Name
+        - Region: !Ref Region
           ArtifactStore:
             EncryptionKey:
               Id: !Ref pRegion1CodePipelineKmsKey
               Type: KMS
             Location: !Ref pRegion1CodePipelineArtifactBucket
             Type: S3
-        - Region: !Ref pRegion2Name
-          ArtifactStore:
-            EncryptionKey:
-              Id: !Ref pRegion2CodePipelineKmsKey
-              Type: KMS
-            Location: !Ref pRegion2CodePipelineArtifactBucket
-            Type: S3
+        
       Name: !Sub ${pProduct}-${pTeam}-${pBranchName}
       RoleArn: !Sub arn:aws:iam::${pDeplAccountNumber}:role/${pCodePipelineServiceRole}
       Stages:
@@ -360,7 +260,7 @@ Resources:
                   }
               InputArtifacts:
                 - Name: Source
-              RoleArn: !Sub arn:aws:iam::${pSharedProdAccountNumber}:role/Shared-Lambda-Action
+              RoleArn: !Sub arn:aws:iam::${SharedAcc}:role/Shared-Lambda-Action
               RunOrder: 1
             - !If #cUseCodeBuildProject
                 - cUseCodeBuildProject
@@ -392,7 +292,7 @@ Resources:
                   }
               InputArtifacts:
                 - Name: Source
-              RoleArn: !Sub arn:aws:iam::${pSharedProdAccountNumber}:role/Shared-Lambda-Action
+              RoleArn: !Sub arn:aws:iam::${SharedAcc}:role/Shared-Lambda-Action
               RunOrder: 1
 
             - Name: CodeBuild-ZipUploadCode
@@ -408,25 +308,11 @@ Resources:
               OutputArtifacts:
                 - Name: Build-LambdaCode
               RunOrder: 2
-            
-            # - Name: Scan_CodeBuild_Project
-            #   ActionTypeId:
-            #     Category: Build
-            #     Owner: AWS
-            #     Provider: CodeBuild
-            #     Version: "1"
-            #   Configuration:
-            #     ProjectName: !Ref rScanCodeBuildProject
-            #   InputArtifacts:
-            #     - Name: Source
-            #   OutputArtifacts:
-            #     - Name: Scan-Build
-            #   RunOrder: 1
         - !If # Deployment into Dev
           - cDeployToDev
           - Name: !Sub ${pTeam}-Dev
             Actions:
-              - Name: !Sub Deploy_Dev-${pRegion1Name}
+              - Name: !Sub Deploy_Dev-${Region}
                 ActionTypeId:
                   Category: Deploy
                   Owner: AWS
@@ -441,8 +327,7 @@ Resources:
                     {
                       "pEnvironment": "dev",
                       "pProduct": "${pProduct}",
-                      "pMainRegion": "${pRegion1Name}",
-                      "pRegion2Active": "${pRegion2Active}",
+                      "pMainRegion": "${Region}",
                       "pLambdaCodeBucket": "${pRegion1CodePipelineArtifactBucket}",
                       "pObjectVersion": {"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]}                  
                     }
@@ -468,296 +353,101 @@ Resources:
                 OutputArtifacts:
                   - Name: Outputs-Dev-R1
                 RoleArn: !Sub arn:aws:iam::${pDevAccountNumber}:role/${pCodePipelineActionRole}
-                Region: !Ref pRegion1Name
+                Region: !Ref Region
                 RunOrder: 1
-              # - Name: !Sub Deploy_Dev-${pRegion2Name}
-              #   ActionTypeId:
-              #     Category: Deploy
-              #     Owner: AWS
-              #     Provider: CloudFormation
-              #     Version: "1"
-              #   Configuration:
-              #     ActionMode: CREATE_UPDATE
-              #     Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-              #     RoleArn: !Sub arn:aws:iam::${pDevAccountNumber}:role/${pCodePipelineActionRole}
-              #     StackName: !Sub ${pProduct}-${pTeam}
-              #     ParameterOverrides: !Sub |
-              #       {
-              #         "pEnvironment": "dev",
-              #         "pProduct": "${pProduct}",
-              #         "pMainRegion": "${pRegion1Name}",
-              #         "pRegion2Active": "${pRegion2Active}"
-              #       }
-              #     TemplatePath: !If
-              #       - cUseCodeBuildProject
-              #       - !Sub Build::${pTemplatePath}
-              #       - !Sub Source::${pTemplatePath}
-              #     TemplateConfiguration: !If
-              #       - cUseConfigurationDev
-              #       - !If
-              #         - cUseCodeBuildProject
-              #         - !Sub Build::${pConfigurationPathDevR2}
-              #         - !Sub Source::${pConfigurationPathDevR2}
-              #       - !Ref AWS::NoValue
-              #     OutputFileName: Outputs-Dev-r2.json
-              #   InputArtifacts: !If
-              #     - cUseCodeBuildProject # Include Build Artifact if using a build project
-              #     - - Name: Source
-              #       - Name: Build
-              #     - - Name: Source
-              #   OutputArtifacts:
-              #     - Name: Outputs-Dev-R2
-              #   RoleArn: !Sub arn:aws:iam::${pDevAccountNumber}:role/${pCodePipelineActionRole}
-              #   Region: !Ref pRegion2Name
-              #   RunOrder: 1
+              
           - !Ref AWS::NoValue
-  #       - !If # Approval before deployment into PreProd
-  #         - cApprovalIntoPreProd 
-  #         - Name: !Sub ${pTeam}-PreProd_Approval
-  #           Actions:
-  #             - Name: PreProdApproval
-  #               ActionTypeId:
-  #                 Category: Approval
-  #                 Owner: AWS
-  #                 Provider: Manual
-  #                 Version: "1"
-  #               Configuration:
-  #                 NotificationArn: !Sub arn:aws:sns:${pRegion1Name}:${pSharedProdAccountNumber}:DeliveryPipelineManualApproval
-  #                 CustomData: !Sub |
-  #                   {
-  #                     "PipelineAccount": ${pDeplAccountNumber}
-  #                   }
-  #               RoleArn: !Sub arn:aws:iam::${pSharedProdAccountNumber}:role/Shared-Lambda-Action
-  #               RunOrder: 1
-  #         - !Ref AWS::NoValue
-  #       - !If # Deployment into PreProd
-  #         - cDeployToPreProd
-  #         - Name: !Sub ${pTeam}-PreProd
-  #           Actions:
-  #             - Name: !Sub Deploy_PreProd-${pRegion1Name}
-  #               ActionTypeId:
-  #                 Category: Deploy
-  #                 Owner: AWS
-  #                 Provider: CloudFormation
-  #                 Version: "1"
-  #               Configuration:
-  #                 ActionMode: CREATE_UPDATE
-  #                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-  #                 RoleArn: !Sub arn:aws:iam::${pPreProdAccountNumber}:role/${pCodePipelineActionRole}
-  #                 StackName: !Sub ${pProduct}-${pTeam}
-  #                 ParameterOverrides: !Sub |
-  #                   {
-  #                     "pProduct": "${pProduct}",
-  #                     "pEnvironment": "preprod",
-  #                     "pMainRegion": "${pRegion1Name}",
-  #                     "pRegion2Active": "${pRegion2Active}",
-  #                     "pLambdaCodeBucket": "${pRegion1CodePipelineArtifactBucket}",
-  #                     "pObjectVersion": {"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]}  
-  #                   }
-  #                 TemplatePath: !If
-  #                   - cUseCodeBuildProject
-  #                   - !Sub Build::${pTemplatePath}
-  #                   - !Sub Source::${pTemplatePath}
-  #                 TemplateConfiguration: !If
-  #                   - cUseConfigurationPreProd
-  #                   - !If
-  #                     - cUseCodeBuildProject
-  #                     - !Sub Build::${pConfigurationPathPreProd}
-  #                     - !Sub Source::${pConfigurationPathPreProd}
-  #                   - !Ref AWS::NoValue
-  #                 OutputFileName: Outputs-PreProd.json
-  #               InputArtifacts: !If
-  #                 - cUseCodeBuildProject # Include Build Artifact if using a build project
-  #                 - - Name: Source
-  #                   - Name: Build
-  #                   - Name: Build-LambdaCode
-  #                 - - Name: Source
-  #                   - Name: Build-LambdaCode
-  #               OutputArtifacts:
-  #                 - Name: Outputs-PreProd
-  #               RoleArn: !Sub arn:aws:iam::${pPreProdAccountNumber}:role/${pCodePipelineActionRole}
-  #               Region: !Ref pRegion1Name
-  #               RunOrder: 1
-  #             - Name: !Sub Deploy_PreProd-${pRegion2Name}
-  #               ActionTypeId:
-  #                 Category: Deploy
-  #                 Owner: AWS
-  #                 Provider: CloudFormation
-  #                 Version: "1"
-  #               Configuration:
-  #                 ActionMode: CREATE_UPDATE
-  #                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-  #                 RoleArn: !Sub arn:aws:iam::${pPreProdAccountNumber}:role/${pCodePipelineActionRole}
-  #                 StackName: !Sub ${pProduct}-${pTeam}
-  #                 ParameterOverrides: !Sub |
-  #                   {
-  #                     "pEnvironment": "preprod",
-  #                     "pProduct": "${pProduct}",
-  #                     "pMainRegion": "${pRegion1Name}",
-  #                     "pRegion2Active": "${pRegion2Active}",
-  #                     "pLambdaCodeBucket": "${pRegion2CodePipelineArtifactBucket}",
-  #                     "pObjectVersion": {"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR2"]}
-  #                   }
-  #                 TemplatePath: !If
-  #                   - cUseCodeBuildProject
-  #                   - !Sub Build::${pTemplatePath}
-  #                   - !Sub Source::${pTemplatePath}
-  #                 TemplateConfiguration: !If
-  #                   - cUseConfigurationPreProd
-  #                   - !If
-  #                     - cUseCodeBuildProject
-  #                     - !Sub Build::${pConfigurationPathPreProdR2}
-  #                     - !Sub Source::${pConfigurationPathPreProdR2}
-  #                   - !Ref AWS::NoValue
-  #                 OutputFileName: Outputs-PreProd-R2.json
-  #               InputArtifacts: !If
-  #                 - cUseCodeBuildProject # Include Build Artifact if using a build project
-  #                 - - Name: Source
-  #                   - Name: Build
-  #                   - Name: Build-LambdaCode
-  #                 - - Name: Source
-  #                   - Name: Build-LambdaCode
-  #               OutputArtifacts:
-  #                 - Name: Outputs-PreProd-R2
-  #               RoleArn: !Sub arn:aws:iam::${pPreProdAccountNumber}:role/${pCodePipelineActionRole}
-  #               Region: !Ref pRegion2Name
-  #               RunOrder: 1
-  #         - !Ref AWS::NoValue
-  #       - !If # Approval before deployment into Prod
-  #         - cApprovalIntoProd 
-  #         - Name: !Sub ${pTeam}-Prod_Approval
-  #           Actions:
-  #             - Name: ProdApproval
-  #               ActionTypeId:
-  #                 Category: Approval
-  #                 Owner: AWS
-  #                 Provider: Manual
-  #                 Version: "1"
-  #               Configuration:
-  #                 NotificationArn: !Sub arn:aws:sns:${pRegion1Name}:${pSharedProdAccountNumber}:DeliveryPipelineManualApproval
-  #                 CustomData: !Sub |
-  #                   {
-  #                     "PipelineAccount": ${pDeplAccountNumber}
-  #                   }
-  #               RoleArn: !Sub arn:aws:iam::${pSharedProdAccountNumber}:role/Shared-Lambda-Action
-  #               RunOrder: 1
-  #         - !Ref AWS::NoValue
-  #       - !If # Deployment into Prod
-  #         - cDeployToProd
-  #         - Name: !Sub ${pTeam}-Prod
-  #           Actions:
-  #             - Name: !Sub Deploy_Prod-${pRegion1Name}
-  #               ActionTypeId:
-  #                 Category: Deploy
-  #                 Owner: AWS
-  #                 Provider: CloudFormation
-  #                 Version: "1"
-  #               Configuration:
-  #                 ActionMode: CREATE_UPDATE
-  #                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-  #                 RoleArn: !Sub arn:aws:iam::${pProdAccountNumber}:role/${pCodePipelineActionRole}
-  #                 StackName: !Sub ${pProduct}-${pTeam}
-  #                 ParameterOverrides: !Sub |
-  #                   {
-  #                     "pProduct": "${pProduct}",
-  #                     "pEnvironment": "prod",
-  #                     "pMainRegion": "${pRegion1Name}",
-  #                     "pRegion2Active": "${pRegion2Active}",
-  #                     "pLambdaCodeBucket": "${pRegion1CodePipelineArtifactBucket}",
-  #                     "pObjectVersion": {"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]}  
-  #                   }
-  #                 TemplatePath: !If
-  #                   - cUseCodeBuildProject
-  #                   - !Sub Build::${pTemplatePath}
-  #                   - !Sub Source::${pTemplatePath}
-  #                 TemplateConfiguration: !If
-  #                   - cUseConfigurationProd
-  #                   - !If
-  #                     - cUseCodeBuildProject
-  #                     - !Sub Build::${pConfigurationPathProd}
-  #                     - !Sub Source::${pConfigurationPathProd}
-  #                   - !Ref AWS::NoValue
-  #                 OutputFileName: Outputs-Prod.json
-  #               InputArtifacts: !If
-  #                 - cUseCodeBuildProject # Include Build Artifact if using a build project
-  #                 - - Name: Source
-  #                   - Name: Build
-  #                   - Name: Build-LambdaCode
-  #                 - - Name: Source
-  #                   - Name: Build-LambdaCode
-  #               OutputArtifacts:
-  #                 - Name: Outputs-Prod
-  #               RoleArn: !Sub arn:aws:iam::${pProdAccountNumber}:role/${pCodePipelineActionRole}
-  #               Region: !Ref pRegion1Name
-  #               RunOrder: 1
-  #             - Name: !Sub ${pTeam}-Prod-${pRegion2Name}
-  #               ActionTypeId:
-  #                 Category: Deploy
-  #                 Owner: AWS
-  #                 Provider: CloudFormation
-  #                 Version: "1"
-  #               Configuration:
-  #                 ActionMode: CREATE_UPDATE
-  #                 Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
-  #                 RoleArn: !Sub arn:aws:iam::${pProdAccountNumber}:role/${pCodePipelineActionRole}
-  #                 StackName: !Sub ${pProduct}-${pTeam}
-  #                 ParameterOverrides: !Sub |
-  #                   {
-  #                     "pProduct": "${pProduct}",
-  #                     "pEnvironment": "prod",
-  #                     "pMainRegion": "${pRegion1Name}",
-  #                     "pRegion2Active": "${pRegion2Active}",
-  #                     "pLambdaCodeBucket": "${pRegion2CodePipelineArtifactBucket}",
-  #                     "pObjectVersion": {"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR2"]}  
-  #                   }
-  #                 TemplatePath: !If
-  #                   - cUseCodeBuildProject
-  #                   - !Sub Build::${pTemplatePath}
-  #                   - !Sub Source::${pTemplatePath}
-  #                 TemplateConfiguration: !If
-  #                   - cUseConfigurationProd
-  #                   - !If
-  #                     - cUseCodeBuildProject
-  #                     - !Sub Build::${pConfigurationPathProdR2}
-  #                     - !Sub Source::${pConfigurationPathProdR2}
-  #                   - !Ref AWS::NoValue
-  #                 OutputFileName: Outputs-Prod-R2.json
-  #               InputArtifacts: !If
-  #                 - cUseCodeBuildProject # Include Build Artifact if using a build project
-  #                 - - Name: Source
-  #                   - Name: Build
-  #                   - Name: Build-LambdaCode
-  #                 - - Name: Source
-  #                   - Name: Build-LambdaCode
-  #               OutputArtifacts:
-  #                 - Name: Outputs-Prod-R2
-  #               RoleArn: !Sub arn:aws:iam::${pProdAccountNumber}:role/${pCodePipelineActionRole}
-  #               Region: !Ref pRegion2Name
-  #               RunOrder: 1
-  #         - !Ref AWS::NoValue
+  
+        - !If # Approval before deployment into Prod
+          - cApprovalIntoProd 
+          - Name: !Sub ${pTeam}-Prod_Approval
+            Actions:
+              - Name: ProdApproval
+                ActionTypeId:
+                  Category: Approval
+                  Owner: AWS
+                  Provider: Manual
+                  Version: "1"
+                Configuration:
+                  NotificationArn: !Sub arn:aws:sns:${Region}:${SharedAcc}:DeliveryPipelineManualApproval
+                  CustomData: !Sub |
+                    {
+                      "PipelineAccount": ${pDeplAccountNumber}
+                    }
+                RoleArn: !Sub arn:aws:iam::${SharedAcc}:role/Shared-Lambda-Action
+                RunOrder: 1
+          - !Ref AWS::NoValue
+        - !If # Deployment into Prod
+          - cDeployToProd
+          - Name: !Sub ${pTeam}-Prod
+            Actions:
+              - Name: !Sub Deploy_Prod-${Region}
+                ActionTypeId:
+                  Category: Deploy
+                  Owner: AWS
+                  Provider: CloudFormation
+                  Version: "1"
+                Configuration:
+                  ActionMode: CREATE_UPDATE
+                  Capabilities: CAPABILITY_NAMED_IAM,CAPABILITY_AUTO_EXPAND
+                  RoleArn: !Sub arn:aws:iam::${pProdAccountNumber}:role/${pCodePipelineActionRole}
+                  StackName: !Sub ${pProduct}-${pTeam}
+                  ParameterOverrides: !Sub |
+                    {
+                      "pProduct": "${pProduct}",
+                      "pEnvironment": "prod",
+                      "pMainRegion": "${Region}",
+                      "pLambdaCodeBucket": "${pRegion1CodePipelineArtifactBucket}",
+                      "pObjectVersion": {"Fn::GetParam":["Build-LambdaCode","output.json","oObjectVersionR1"]}  
+                    }
+                  TemplatePath: !If
+                    - cUseCodeBuildProject
+                    - !Sub Build::${pTemplatePath}
+                    - !Sub Source::${pTemplatePath}
+                  TemplateConfiguration: !If
+                    - cUseConfigurationProd
+                    - !If
+                      - cUseCodeBuildProject
+                      - !Sub Build::${pConfigurationPathProd}
+                      - !Sub Source::${pConfigurationPathProd}
+                    - !Ref AWS::NoValue
+                  OutputFileName: Outputs-Prod.json
+                InputArtifacts: !If
+                  - cUseCodeBuildProject # Include Build Artifact if using a build project
+                  - - Name: Source
+                    - Name: Build
+                    - Name: Build-LambdaCode
+                  - - Name: Source
+                    - Name: Build-LambdaCode
+                OutputArtifacts:
+                  - Name: Outputs-Prod
+                RoleArn: !Sub arn:aws:iam::${pProdAccountNumber}:role/${pCodePipelineActionRole}
+                Region: !Ref Region
+                RunOrder: 1
+          - !Ref AWS::NoValue
 
-  # # -------------------------------------------
-  # # CloudWatch Event
-  # # -------------------------------------------
-  # rInitiatePipelineEvent:
-  #   Type: AWS::Events::Rule
-  #   Properties:
-  #     Description: 'Amazon CloudWatch Events rule to automatically start your pipeline when a change occurs to a CodeCommit Repository'
-  #     EventPattern:
-  #       source:
-  #         - aws.codecommit
-  #       detail-type:
-  #         - "CodeCommit Repository State Change"
-  #       resources:
-  #         - !Sub arn:aws:codecommit:${pRegion1Name}:${AWS::AccountId}:${pProduct}
-  #       detail:
-  #         referenceType:
-  #           - branch
-  #         referenceName:
-  #           - !Ref pBranchName
-  #     Name: !Sub ${pProduct}-${pTeam}-f-${pBranchName}
-  #     State: "ENABLED"
-  #     Targets:
-  #       - RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/CodePipeline-Service
-  #         Arn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${rCodePipeline}
-  #         Id: !Sub "${pProduct}_Initial_CodePipeline_V1"   
+  # -------------------------------------------
+  # CloudWatch Event
+  # -------------------------------------------
+  rInitiatePipelineEvent:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: 'Amazon CloudWatch Events rule to automatically start your pipeline when a change occurs to a CodeCommit Repository'
+      EventPattern:
+        source:
+          - aws.codecommit
+        detail-type:
+          - "CodeCommit Repository State Change"
+        resources:
+          - !Sub arn:aws:codecommit:${Region}:${AWS::AccountId}:${pProduct}
+        detail:
+          referenceType:
+            - branch
+          referenceName:
+            - !Ref pBranchName
+      Name: !Sub ${pProduct}-${pTeam}-f-${pBranchName}
+      State: "ENABLED"
+      Targets:
+        - RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/CodePipeline-Service
+          Arn: !Sub arn:aws:codepipeline:${AWS::Region}:${AWS::AccountId}:${rCodePipeline}
+          Id: !Sub "${pProduct}_Initial_CodePipeline_V1"   
